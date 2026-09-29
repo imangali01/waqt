@@ -48,7 +48,7 @@ function render(s) {
   $('label').textContent = s.prayerName;
   $('sub').textContent = s.phase === 'prayer' ? `до ${s.atText}` : `в ${s.atText}`;
   $('timer').textContent = s.text;
-  $('timer').className = `timer level-${level}`;
+  $('timer').className = `timer level-${level}${s.pulse ? ' pulse' : ''}`;
   $('seconds').textContent = `:${s.seconds}`;
   $('bar').className = `level-${level}`;
   $('bar').style.width = s.progress == null ? '0' : `${Math.round(s.progress * 100)}%`;

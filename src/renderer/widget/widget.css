@@ -23,6 +23,11 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
   font-variant-numeric: tabular-nums; transition: color .6s ease; }
 .timer.level-warn { color: var(--red); }
 .timer.level-critical { color: var(--maroon); }
+.timer.pulse { animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { color: var(--maroon); }
+  50% { color: #FF3B30; }
+}
 .seconds { font-size: 19px; font-weight: 700; color: var(--muted); margin-left: 3px;
   font-variant-numeric: tabular-nums; }
 
@@ -66,4 +71,4 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 .sync { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); margin-left: 2px; }
 [hidden] { display: none !important; }
 button { -webkit-app-region: no-drag; font-family: inherit; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
