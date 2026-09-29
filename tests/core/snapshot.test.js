@@ -36,3 +36,23 @@ describe('buildSnapshot имя дня', () => {
     expect(buildSnapshot(DAYS, {}, at('2026-07-01', '13:00'), names).name).toBeUndefined();
   });
 });
+
+describe('buildSnapshot pulse (последние 5 минут без отметки)', () => {
+  // Аср 17:40–20:10 (sunset)
+  it('пульсирует, когда осталось 5 минут или меньше и намаз не отмечен', () => {
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '20:05:00')).pulse).toBe(true);
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '20:09:30')).pulse).toBe(true);
+  });
+  it('не пульсирует, пока осталось больше 5 минут', () => {
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '20:04:59')).pulse).toBe(false);
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '13:00')).pulse).toBe(false);
+  });
+  it('не пульсирует после отметки', () => {
+    const marks = setMark({}, '2026-07-01', 'asr', 'on_time', '2026-07-01T14:00:00.000Z');
+    expect(buildSnapshot(DAYS, marks, at('2026-07-01', '20:07:00')).pulse).toBe(false);
+  });
+  it('не пульсирует в промежутке между намазами и без данных', () => {
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '05:30')).pulse).toBe(false);
+    expect(buildSnapshot({}, {}, at('2026-07-01', '13:00')).pulse).toBe(false);
+  });
+});
