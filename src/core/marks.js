@@ -50,3 +50,10 @@ export function trackDay(tracked, days, date) {
   tracked[date] = { times: days[date], dirty: true };
   return true;
 }
+
+// Пропущенный намаз (окно закончилось, отметки нет) → late. Иначе null: ничего менять не нужно.
+export function markLateIfMissed(marks, window, now, nowIso) {
+  if (now < window.end) return null;
+  if (getMark(marks, window.date, window.prayer)) return null;
+  return setMark(marks, window.date, window.prayer, 'late', nowIso);
+}
