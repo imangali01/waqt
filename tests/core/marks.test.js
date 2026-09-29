@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   markKey, getMark, setMark, clearMark, mergeMarks,
-  decideStatus, statusOfWindow, historyAction, trackDay,
+  decideStatus, statusOfWindow, historyAction, trackDay, markLateIfMissed,
 } from '../../src/core/marks.js';
 import { windowsForDate } from '../../src/core/windows.js';
 import { DAYS, at } from '../fixtures.js';
@@ -82,5 +82,25 @@ describe('trackDay', () => {
     expect(tracked['2026-07-01']).toMatchObject({ times: DAYS['2026-07-01'], dirty: true });
     expect(trackDay(tracked, DAYS, '2026-07-01')).toBe(false);
     expect(trackDay(tracked, DAYS, '2030-01-01')).toBe(false);
+  });
+});
+
+describe('markLateIfMissed', () => {
+  const nowIso = '2026-07-01T18:00:00.000Z';
+  it('пропущенный намаз (окно закончилось, отметки нет) отмечается как late', () => {
+    const m = markLateIfMissed({}, dhuhr, at('2026-07-01', '18:00'), nowIso);
+    expect(getMark(m, '2026-07-01', 'dhuhr')).toMatchObject({ status: 'late', dirty: true });
+  });
+  it('окно ещё не закончилось — без изменений (null)', () => {
+    expect(markLateIfMissed({}, dhuhr, at('2026-07-01', '13:00'), nowIso)).toBeNull();
+  });
+  it('зелёный не превращается в жёлтый', () => {
+    const marks = setMark({}, '2026-07-01', 'dhuhr', 'on_time', '2026-07-01T08:00:00.000Z');
+    expect(markLateIfMissed(marks, dhuhr, at('2026-07-01', '18:00'), nowIso)).toBeNull();
+  });
+  it('после отмены отметки снова можно отметить late', () => {
+    let marks = setMark({}, '2026-07-01', 'dhuhr', 'late', '2026-07-01T17:50:00.000Z');
+    marks = clearMark(marks, '2026-07-01', 'dhuhr', '2026-07-01T17:55:00.000Z');
+    expect(getMark(markLateIfMissed(marks, dhuhr, at('2026-07-01', '18:00'), nowIso), '2026-07-01', 'dhuhr')).toMatchObject({ status: 'late' });
   });
 });

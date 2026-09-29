@@ -8,12 +8,13 @@ import { buildSnapshot } from '../core/snapshot.js';
 import { startRefresh } from '../core/refresh.js';
 import { createData } from '../core/data.js';
 import { computeState } from '../core/state.js';
-import { setMark, clearMark, decideStatus, historyAction, trackDay } from '../core/marks.js';
+import { setMark, clearMark, decideStatus, historyAction, trackDay, markLateIfMissed } from '../core/marks.js';
 import { buildHistory } from '../core/history.js';
 import { createClient } from '@supabase/supabase-js';
 import WebSocket from 'ws';
 import { parseEnv } from 'node:util';
 import { createSync } from '../core/sync.js';
+import { hasStoredSession } from '../core/auth-state.js';
 import { animateBounds } from './animate.js';
 import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
@@ -103,9 +104,11 @@ ipcMain.handle('mark:current', () => {
 ipcMain.handle('mark:missed', (_e, date, prayer) => {
   const now = nowDate();
   const w = windowsForDate(timesSource.getDays(), date).find((x) => x.prayer === prayer);
-  if (!w || now < w.end) return false;
-  store.data.marks = setMark(store.data.marks, date, prayer, 'late', now.toISOString());
+  const marks = w && markLateIfMissed(store.data.marks, w, now, now.toISOString());
+  if (!marks) return false;
+  store.data.marks = marks;
   store.save();
+  scheduleSync();
   return true;
 });
 
@@ -212,12 +215,6 @@ app.whenReady().then(async () => {
   createTray();
   setupAutostart();
   // [startup]
-  if (client) {
-    const { data: sess } = await client.auth.getSession();
-    if (!sess.session) openLogin();
-    runSync();
-    setInterval(runSync, 5 * 60e3);
-  }
   startRefresh({
     refresh: () => timesSource.refresh(new Date()),
     isMissing: () => Object.keys(timesSource.getDays()).length === 0,
@@ -226,6 +223,12 @@ app.whenReady().then(async () => {
   });
   setInterval(tick, 1000);
   tick();
+  // Синхронизация стартует после таймера и не блокирует его (сеть может быть недоступна).
+  if (client) {
+    if (!hasStoredSession(authFile.read({}))) openLogin();
+    runSync();
+    setInterval(runSync, 5 * 60e3);
+  }
 });
 
 app.on('before-quit', () => { quitting = true; });
@@ -237,7 +240,7 @@ app.on('second-instance', () => showWidget());
 function showWidget() {
   if (!win) return;
   win.show();
-  win.setAlwaysOnTop(true, 'screen-saver');
+  if (!historyOpen) win.setAlwaysOnTop(true, 'screen-saver');
 }
 
 function toggleWidget() {
