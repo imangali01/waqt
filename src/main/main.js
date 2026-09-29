@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createJsonFile } from '../core/store.js';
@@ -20,6 +21,10 @@ const store = createData(createJsonFile(path.join(userData, 'data.json')));
 const nowDate = () => new Date(Date.now() + Number(process.env.WAQT_SHIFT_MS ?? 0));
 
 const fired = new Set();
+let names = [];
+try {
+  names = JSON.parse(fs.readFileSync(path.join(__dirname, '../../assets/names.json'), 'utf8'));
+} catch { /* имён нет — блок не показывается */ }
 
 let win;
 
@@ -61,7 +66,7 @@ ipcMain.handle('mark:missed', (_e, date, prayer) => {
 function tick() {
   const now = nowDate();
   if (trackDay(store.data.tracked, timesSource.getDays(), dateOf(now))) store.save();
-  const snap = buildSnapshot(timesSource.getDays(), store.data.marks, now);
+  const snap = buildSnapshot(timesSource.getDays(), store.data.marks, now, names);
   win.webContents.send('state', snap);
   const due = dueReminder({ snap, fired });
   if (due) {

@@ -21,7 +21,8 @@
       </span>
     </header>
     <div id="middle" class="middle">
-      <button id="missed-btn" class="missed" title="Отметить пропущенный как прочитанный позже" hidden></button>
+      <button id="name-chip" class="chip" title="Имя Аллаха дня" hidden></button>
+      <button id="missed-btn" class="miss-badge" title="Отметить пропущенный как прочитанный позже" hidden></button>
     </div>
     <div class="clock">
       <span id="timer" class="timer level-normal">--:--</span><span id="seconds" class="seconds"></span>
@@ -38,6 +39,12 @@
       <div id="dots" class="dots"></div>
     </footer>
   </main>
+  <section id="name-face" class="face" hidden>
+    <div id="face-ar" class="face-ar"></div>
+    <div id="face-tr" class="face-tr"></div>
+    <div id="face-tl" class="face-tl"></div>
+    <div id="face-desc" class="face-desc"></div>
+  </section>
   <audio id="chime" src="../../assets/chime.wav" preload="auto"></audio>
   <script type="module" src="widget/widget.js"></script>
 </body>
