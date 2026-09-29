@@ -3,12 +3,14 @@ import { dateOf } from './tz.js';
 import { PRAYER_NAMES, windowsForDate } from './windows.js';
 import { nameOfDay } from './names.js';
 import { getMark, statusOfWindow } from './marks.js';
+import { computeStreak } from './streak.js';
 
 const PULSE_MS = 5 * 60000;
 
 export function buildSnapshot(days, marks, now, names = []) {
   const s = computeState(days, now);
-  if (s.phase === 'nodata') return { ...s, dots: [], missed: [], pulse: false };
+  const streak = computeStreak({ days, marks, now });
+  if (s.phase === 'nodata') return { ...s, dots: [], missed: [], pulse: false, streak };
 
   const today = dateOf(now);
   const windows = windowsForDate(days, today);
@@ -29,6 +31,7 @@ export function buildSnapshot(days, marks, now, names = []) {
     pulse: s.phase === 'prayer' && !marked && s.remainingMs <= PULSE_MS,
     dots,
     missed,
+    streak,
   };
   if (s.phase === 'gap') snap.name = nameOfDay(names, today);
   return snap;

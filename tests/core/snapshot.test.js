@@ -37,6 +37,20 @@ describe('buildSnapshot имя дня', () => {
   });
 });
 
+describe('buildSnapshot streak', () => {
+  const full = (date) => ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha']
+    .reduce((m, p) => setMark(m, date, p, 'on_time', '2026-07-01T00:00:00.000Z'), {});
+  it('серия дней в снимке', () => {
+    // сегодня Фаджр (его окно уже закончилось к 13:00) прочитан вовремя, остальные намазы впереди
+    const marks = setMark({ ...full('2026-06-30'), ...full('2026-06-29') }, '2026-07-01', 'fajr', 'on_time', '2026-07-01T00:00:00.000Z');
+    expect(buildSnapshot(DAYS, marks, at('2026-07-01', '13:00')).streak).toBe(2);
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '13:00')).streak).toBe(0);
+  });
+  it('серия есть и без данных времён', () => {
+    expect(buildSnapshot({}, full('2026-06-30'), at('2026-07-01', '13:00')).streak).toBe(1);
+  });
+});
+
 describe('buildSnapshot pulse (последние 5 минут без отметки)', () => {
   // Аср 17:40–20:10 (sunset)
   it('пульсирует, когда осталось 5 минут или меньше и намаз не отмечен', () => {
