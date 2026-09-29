@@ -119,7 +119,7 @@ ipcMain.handle('history:open', async () => {
   widgetBounds = win.getBounds();
   const area = screen.getDisplayMatching(widgetBounds).workArea;
   const w = Math.min(960, area.width - 40);
-  const h = Math.min(560, area.height - 40);
+  const h = Math.min(420, area.height - 40);
   const target = {
     x: area.x + Math.round((area.width - w) / 2),
     y: area.y + Math.round((area.height - h) / 2),
