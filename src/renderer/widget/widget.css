@@ -13,7 +13,8 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 .kicker { color: var(--orange); font-size: 12px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; }
 .who-name { color: var(--ink); font-size: 24px; font-weight: 800; line-height: 1.1; margin-top: 1px; }
 .who-sub { color: var(--muted); font-size: 13px; font-weight: 500; margin-top: 2px; }
-.crescent { line-height: 0; }
+.crescent { line-height: 0; border: 0; background: none; padding: 0; cursor: pointer; border-radius: 50%; transition: transform .15s ease; }
+.crescent:hover { transform: scale(1.1); }
 
 .middle { flex: 1; display: flex; align-items: center; gap: 10px; min-height: 0; }
 

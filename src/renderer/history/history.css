@@ -1,0 +1,37 @@
+html.history-mode, html.history-mode body { width: 100vw; height: 100vh; }
+html.history-mode #widget { display: none; }
+
+.history-card { box-sizing: border-box; position: fixed; inset: 0; border-radius: 34px; padding: 22px 28px 18px; background: #fff;
+  display: flex; flex-direction: column; opacity: 0; transition: opacity .2s ease; -webkit-app-region: no-drag;
+  font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; color: #0d0f12; }
+.history-card.visible { opacity: 1; }
+
+.h-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; -webkit-app-region: drag; }
+.h-title { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.h-nav { display: flex; gap: 8px; align-items: center; -webkit-app-region: no-drag; }
+.h-nav button, .h-nav input { height: 34px; border: 0; border-radius: 17px; background: #f1f3f4; padding: 0 14px;
+  font: inherit; font-weight: 600; color: #0d0f12; cursor: pointer; }
+.h-nav button:hover { background: #e6e9eb; }
+.h-nav .h-close { color: #E53935; width: 34px; padding: 0; }
+
+.h-table { flex: 1; display: grid; gap: 8px; align-content: start; overflow: hidden; }
+.h-row { display: grid; grid-template-columns: 76px repeat(14, minmax(0, 1fr)); gap: 6px; align-items: center; }
+.h-date { font-size: 12px; font-weight: 700; text-align: center; color: #7d848b; }
+.h-date.today { color: #F08A1C; }
+.h-prayer { font-size: 14px; font-weight: 700; }
+.cell { height: 46px; padding: 0; overflow: hidden; border: 0; border-radius: 12px; background: #eceff1; color: #98a0a6; font: inherit; font-size: 12px; font-weight: 600;
+  cursor: default; transition: transform .1s ease, background-color .2s ease; }
+.cell.on_time { background: #bfe6cc; color: #17603a; cursor: pointer; }
+.cell.late { background: #ffe38a; color: #7a5a00; cursor: pointer; }
+.cell.missed { background: #f4b1ac; color: #8a1d16; cursor: pointer; }
+.cell.nodata { background: #e9ecee; color: #a4abb1; cursor: pointer; }
+.cell.on_time:hover, .cell.late:hover, .cell.missed:hover, .cell.nodata:hover { transform: scale(1.04); }
+.cell.pending { background: #fff; box-shadow: inset 0 0 0 2px #F08A1C; color: #F08A1C; }
+
+.h-legend { display: flex; gap: 16px; align-items: center; font-size: 12px; color: #7d848b; margin-top: 12px; }
+.lg::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: #d5d8dc; }
+.lg.on_time::before { background: #bfe6cc; }
+.lg.late::before { background: #ffe38a; }
+.lg.missed::before { background: #f4b1ac; }
+.lg.nodata::before { background: #e9ecee; }
+.hint { margin-left: auto; }
