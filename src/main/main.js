@@ -19,6 +19,7 @@ import { animateBounds } from './animate.js';
 import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
+import { dueAzan } from '../core/azan.js';
 import { clampToDisplays } from '../core/window-state.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -201,10 +202,17 @@ function tick() {
   if (trackDay(store.data.tracked, timesSource.getDays(), dateOf(now))) { store.save(); scheduleSync(); }
   const snap = buildSnapshot(timesSource.getDays(), store.data.marks, now, names);
   win.webContents.send('state', snap);
+  // Пока страница грузится, звук потерялся бы, а ключ уже считался бы сыгранным.
+  if (win.webContents.isLoading()) return;
   const due = dueReminder({ snap, fired });
   if (due) {
     fired.add(due.key);
     win.webContents.send('chime', due.minutes);
+  }
+  const azan = dueAzan({ snap, fired });
+  if (azan) {
+    fired.add(azan.key);
+    win.webContents.send('azan');
   }
   // [tick]
 }

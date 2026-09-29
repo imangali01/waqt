@@ -79,3 +79,10 @@ describe('atText', () => {
     expect(computeState(DAYS, at('2026-07-02', '00:30')).atText).toBe('03:02');
   });
 });
+
+describe('elapsedMs', () => {
+  it('сколько прошло с начала окна намаза', () => {
+    expect(computeState(DAYS, at('2026-07-01', '13:00')).elapsedMs).toBe(30 * 60000);
+    expect(computeState(DAYS, at('2026-07-01', '12:30:05')).elapsedMs).toBe(5000);
+  });
+});
