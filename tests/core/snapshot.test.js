@@ -1,13 +1,30 @@
 import { describe, it, expect } from 'vitest';
 import { buildSnapshot } from '../../src/core/snapshot.js';
+import { setMark } from '../../src/core/marks.js';
 import { DAYS, at } from '../fixtures.js';
 
 describe('buildSnapshot', () => {
   it('добавляет русское название намаза', () => {
-    const s = buildSnapshot(DAYS, at('2026-07-01', '13:00'));
-    expect(s).toMatchObject({ phase: 'prayer', prayer: 'dhuhr', prayerName: 'Зухр' });
+    const s = buildSnapshot(DAYS, {}, at('2026-07-01', '13:00'));
+    expect(s).toMatchObject({ phase: 'prayer', prayer: 'dhuhr', prayerName: 'Зухр', marked: false });
   });
   it('nodata без названия', () => {
-    expect(buildSnapshot({}, at('2026-07-01', '13:00'))).toEqual({ phase: 'nodata' });
+    expect(buildSnapshot({}, {}, at('2026-07-01', '13:00'))).toMatchObject({ phase: 'nodata' });
+  });
+  it('marked true после отметки текущего намаза', () => {
+    const marks = setMark({}, '2026-07-01', 'dhuhr', 'on_time', '2026-07-01T08:00:00.000Z');
+    expect(buildSnapshot(DAYS, marks, at('2026-07-01', '13:00')).marked).toBe(true);
+  });
+  it('точки за сегодня и список пропущенных', () => {
+    const marks = setMark({}, '2026-07-01', 'fajr', 'on_time', '2026-07-01T00:30:00.000Z');
+    const s = buildSnapshot(DAYS, marks, at('2026-07-01', '13:00'));
+    expect(s.dots.map((d) => d.status)).toEqual(['on_time', 'pending', 'upcoming', 'upcoming', 'upcoming']);
+    const s2 = buildSnapshot(DAYS, {}, at('2026-07-01', '18:00'));
+    expect(s2.missed).toEqual([{ date: '2026-07-01', prayer: 'fajr', name: 'Фаджр' }, { date: '2026-07-01', prayer: 'dhuhr', name: 'Зухр' }]);
+    expect(s2.dots.map((d) => d.status)).toEqual(['missed', 'missed', 'pending', 'upcoming', 'upcoming']);
+  });
+  it('nodata содержит пустые точки', () => {
+    const s = buildSnapshot({}, {}, at('2026-07-01', '13:00'));
+    expect(s.dots).toEqual([]);
   });
 });

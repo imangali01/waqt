@@ -1,7 +1,27 @@
 const $ = (id) => document.getElementById(id);
 const FIFTEEN_MIN = 15 * 60 * 1000;
+let current = null;
+
+function renderDots(dots) {
+  $('dots').replaceChildren(
+    ...dots.map((d) => {
+      const el = document.createElement('span');
+      el.className = `dot ${d.status}`;
+      el.title = d.name;
+      return el;
+    }),
+  );
+}
 
 function render(s) {
+  current = s;
+  renderDots(s.dots ?? []);
+  const missed = s.missed ?? [];
+  $('missed-btn').hidden = missed.length === 0;
+  $('missed-btn').textContent = missed.length ? `Пропущено: ${missed.length}` : '';
+  $('mark-btn').hidden = s.phase !== 'prayer';
+  $('mark-btn').classList.toggle('done', Boolean(s.marked));
+
   if (s.phase === 'nodata') {
     $('kicker').textContent = 'Нет данных';
     $('label').textContent = 'Время намаза';
@@ -24,3 +44,13 @@ function render(s) {
 }
 
 window.waqt.onState(render);
+
+$('mark-btn').addEventListener('click', async () => {
+  if (current?.marked) return;
+  await window.waqt.mark();
+});
+
+$('missed-btn').addEventListener('click', async () => {
+  const first = current?.missed?.[0];
+  if (first) await window.waqt.markMissed(first.date, first.prayer);
+});

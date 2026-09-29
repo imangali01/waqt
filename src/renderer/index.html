@@ -20,9 +20,14 @@
         </svg>
       </span>
     </header>
-    <div id="middle" class="middle"></div>
+    <div id="middle" class="middle">
+      <button id="missed-btn" class="missed" title="Отметить пропущенный как прочитанный позже" hidden></button>
+    </div>
     <div class="clock">
       <span id="timer" class="timer level-normal">--:--</span><span id="seconds" class="seconds"></span>
+      <button id="mark-btn" class="mark" title="Я прочитал" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
     <div class="bar"><i id="bar" class="level-normal"></i></div>
     <footer class="foot">
