@@ -19,3 +19,11 @@
 2. Реализация в основной сессии (Sonnet). Ревью агентом `reviewer` (Opus) после тикетов 03, 07, 08.
 3. Сбор данных для тикета 05 агентом `names-collector` (Haiku).
 4. Перед закрытием тикета: тесты зелёные, приложение запущено и проверено.
+
+## Настройка .env (создаёт пользователь, Claude не читает и не пишет `.env*`)
+В корне проекта файл `.env`:
+```
+SUPABASE_URL=https://xzmezgwdwqrfgbhxgdsu.supabase.co
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_...   # Publishable key из Project Settings → API Keys
+```
+Таблицы создаются запуском `supabase/schema.sql` в SQL Editor. Для проверок можно передать те же переменные через окружение процесса, не трогая файл.

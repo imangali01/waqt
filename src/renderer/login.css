@@ -1,0 +1,10 @@
+body { margin: 0; padding: 22px; font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; background: #fff; color: #0d0f12; }
+h1 { font-size: 22px; font-weight: 800; margin: 0 0 4px; letter-spacing: -.02em; }
+p { margin: 0 0 14px; color: #7d848b; font-size: 13px; }
+input { width: 100%; box-sizing: border-box; height: 38px; padding: 0 14px; margin-bottom: 8px; border: 0; border-radius: 19px;
+  background: #f1f3f4; font: inherit; }
+input:focus { outline: 2px solid #2BA36B; }
+button { height: 38px; padding: 0 22px; border: 0; border-radius: 19px; background: #2BA36B; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+button:disabled { opacity: .6; cursor: default; }
+#err { color: #E53935; font-size: 12px; min-height: 16px; margin: 4px 0 8px; }
+  

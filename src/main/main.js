@@ -10,6 +10,10 @@ import { createData } from '../core/data.js';
 import { computeState } from '../core/state.js';
 import { setMark, clearMark, decideStatus, historyAction, trackDay } from '../core/marks.js';
 import { buildHistory } from '../core/history.js';
+import { createClient } from '@supabase/supabase-js';
+import WebSocket from 'ws';
+import { parseEnv } from 'node:util';
+import { createSync } from '../core/sync.js';
 import { animateBounds } from './animate.js';
 import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
@@ -18,10 +22,29 @@ import { clampToDisplays } from '../core/window-state.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
+try {
+  Object.assign(process.env, parseEnv(fs.readFileSync(path.join(app.getAppPath(), '.env'), 'utf8')));
+} catch { /* .env нет — синхронизация выключена */ }
 const timesSource = createTimesSource({ file: createJsonFile(path.join(userData, 'times.json')) });
 
 const store = createData(createJsonFile(path.join(userData, 'data.json')));
 const nowDate = () => new Date(Date.now() + Number(process.env.WAQT_SHIFT_MS ?? 0));
+
+const authFile = createJsonFile(path.join(userData, 'auth.json'));
+const authStorage = {
+  getItem: (k) => authFile.read({})[k] ?? null,
+  setItem: (k, v) => authFile.write({ ...authFile.read({}), [k]: v }),
+  removeItem: (k) => { const o = authFile.read({}); delete o[k]; authFile.write(o); },
+};
+const client = process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+    auth: { storage: authStorage, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+    realtime: { transport: WebSocket },
+  })
+  : null;
+const sync = client ? createSync({ client, data: store.data, save: store.save }) : null;
+let syncTimer;
+let loginWin = null;
 
 const fired = new Set();
 let names = [];
@@ -73,6 +96,7 @@ ipcMain.handle('mark:current', () => {
   if (!status) return false;
   store.data.marks = setMark(store.data.marks, s.date, s.prayer, status, now.toISOString());
   store.save();
+  scheduleSync();
   return true;
 });
 
@@ -127,12 +151,51 @@ ipcMain.handle('history:toggle', (_e, date, prayer) => {
   else if (action === 'clear') store.data.marks = clearMark(store.data.marks, date, prayer, now.toISOString());
   else return false;
   store.save();
+  scheduleSync();
   return true;
+});
+
+async function runSync() {
+  if (!sync) return;
+  try {
+    const res = await sync.syncOnce();
+    win?.webContents.send('sync', res);
+  } catch (e) {
+    win?.webContents.send('sync', { ok: false, reason: String(e.message ?? e) });
+  }
+}
+
+function scheduleSync() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(runSync, 3000);
+}
+
+function openLogin() {
+  if (loginWin) { loginWin.focus(); return; }
+  loginWin = new BrowserWindow({
+    width: 340, height: 330, resizable: false, autoHideMenuBar: true, title: 'Вход в Waqt', alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.cjs'),
+      contextIsolation: true, nodeIntegration: false, sandbox: true,
+    },
+  });
+  loginWin.loadFile(path.join(__dirname, '../renderer/login.html'));
+  loginWin.on('closed', () => { loginWin = null; });
+}
+
+ipcMain.handle('auth:login', async (_e, email, password) => {
+  if (!client) return { ok: false, error: 'Supabase не настроен (.env)' };
+  const { error } = await client.auth.signInWithPassword({ email, password });
+  if (error) {
+    return { ok: false, error: /invalid login/i.test(error.message) ? 'Неверный email или пароль' : error.message };
+  }
+  runSync();
+  return { ok: true };
 });
 
 function tick() {
   const now = nowDate();
-  if (trackDay(store.data.tracked, timesSource.getDays(), dateOf(now))) store.save();
+  if (trackDay(store.data.tracked, timesSource.getDays(), dateOf(now))) { store.save(); scheduleSync(); }
   const snap = buildSnapshot(timesSource.getDays(), store.data.marks, now, names);
   win.webContents.send('state', snap);
   const due = dueReminder({ snap, fired });
@@ -149,6 +212,12 @@ app.whenReady().then(async () => {
   createTray();
   setupAutostart();
   // [startup]
+  if (client) {
+    const { data: sess } = await client.auth.getSession();
+    if (!sess.session) openLogin();
+    runSync();
+    setInterval(runSync, 5 * 60e3);
+  }
   startRefresh({
     refresh: () => timesSource.refresh(new Date()),
     isMissing: () => Object.keys(timesSource.getDays()).length === 0,
@@ -181,6 +250,7 @@ function createTray() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Показать / Скрыть', click: toggleWidget },
     { label: 'История', click: () => { showWidget(); win.webContents.send('open-history-request'); } },
+    { label: 'Войти в аккаунт', click: openLogin },
     { label: 'Выйти', click: () => { quitting = true; app.quit(); } },
   ]));
   tray.on('click', toggleWidget);

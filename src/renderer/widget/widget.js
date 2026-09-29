@@ -75,3 +75,8 @@ window.waqt.onChime(() => {
 
 $('name-chip').addEventListener('click', () => { $('name-face').hidden = false; });
 $('name-face').addEventListener('click', () => { $('name-face').hidden = true; });
+
+window.waqt.onSync((s) => {
+  $('sync').hidden = s.ok || s.reason === 'no-session' && false;
+  $('sync').title = s.ok ? '' : `Не синхронизировано: ${s.reason}`;
+});

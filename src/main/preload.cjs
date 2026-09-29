@@ -10,5 +10,7 @@ contextBridge.exposeInMainWorld('waqt', {
   openHistory: () => ipcRenderer.invoke('history:open'),
   closeHistory: () => ipcRenderer.invoke('history:close'),
   getHistory: (startDate, count) => ipcRenderer.invoke('history:get', startDate, count),
+  login: (email, password) => ipcRenderer.invoke('auth:login', email, password),
+  onSync: (cb) => ipcRenderer.on('sync', (_e, s) => cb(s)),
   toggleCell: (date, prayer) => ipcRenderer.invoke('history:toggle', date, prayer),
 });

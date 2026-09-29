@@ -63,6 +63,7 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 .face-tl { font-size: 12px; font-weight: 600; color: var(--orange); margin-top: 1px; }
 .face-desc { font-size: 11px; line-height: 1.35; color: var(--muted); margin-top: 8px; overflow-y: auto; text-align: left; }
 
+.sync { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); margin-left: 2px; }
 [hidden] { display: none !important; }
 button { -webkit-app-region: no-drag; font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
