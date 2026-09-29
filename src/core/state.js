@@ -16,7 +16,6 @@ export function levelFor(ms) {
 
 export function formatRemaining(ms) {
   const total = Math.max(0, Math.floor(ms / 1000));
-  if (ms < 15 * MIN) return `${pad(Math.floor(total / 60))}:${pad(total % 60)}`;
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
   return `${h}:${pad(m)}`;
