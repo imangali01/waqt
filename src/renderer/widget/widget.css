@@ -1,0 +1,18 @@
+:root { --orange: #E36016; --green: #3DA35D; --red: #E53935; --maroon: #7A0019; --yellow: #F2C230; --gray: #D5D8DC; }
+html, body { margin: 0; width: 200px; height: 200px; background: transparent; overflow: hidden;
+  font-family: "Segoe UI", system-ui, sans-serif; -webkit-user-select: none; user-select: none; }
+.card { box-sizing: border-box; width: 200px; height: 200px; border-radius: 28px; padding: 14px 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf8ee 100%); display: flex; flex-direction: column;
+  -webkit-app-region: drag; }
+.top { display: flex; justify-content: space-between; align-items: center; height: 24px; }
+.label { color: var(--orange); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.timer { font-size: 46px; font-weight: 800; text-align: center; margin-top: 6px; color: #111; letter-spacing: -.02em; }
+.timer.level-warn { color: var(--red); }
+.timer.level-critical { color: var(--maroon); }
+.middle { flex: 1; display: flex; align-items: center; justify-content: center; }
+.dots { display: flex; justify-content: center; gap: 8px; height: 14px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--gray); }
+.dot.on_time { background: var(--green); }
+.dot.late { background: var(--yellow); }
+.dot.missed { background: var(--red); }
+button { -webkit-app-region: no-drag; }

@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/main/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "node scripts/start.js",
     "test": "vitest run",
     "assets": "node scripts/make-assets.js"
   },
