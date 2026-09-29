@@ -7,12 +7,31 @@
 </head>
 <body>
   <main class="card" id="widget">
-    <div class="top">
-      <span id="label" class="label">…</span>
-    </div>
-    <div id="timer" class="timer level-normal">--:--</div>
+    <header class="top">
+      <div class="who">
+        <div id="kicker" class="kicker">Сейчас</div>
+        <div id="label" class="who-name">…</div>
+        <div id="sub" class="who-sub"></div>
+      </div>
+      <span class="crescent" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="26" height="26">
+          <circle cx="12" cy="12" r="10.5" fill="none" stroke="#2BA36B" stroke-width="1.8"/>
+          <path d="M14.6 6.6a5.7 5.7 0 1 0 2.8 9.6a4.6 4.6 0 0 1-2.8-9.6z" fill="#2BA36B"/>
+        </svg>
+      </span>
+    </header>
     <div id="middle" class="middle"></div>
-    <div id="dots" class="dots"></div>
+    <div class="clock">
+      <span id="timer" class="timer level-normal">--:--</span><span id="seconds" class="seconds"></span>
+    </div>
+    <div class="bar"><i id="bar" class="level-normal"></i></div>
+    <footer class="foot">
+      <span class="place">
+        <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8z" fill="currentColor"/></svg>
+        Астана
+      </span>
+      <div id="dots" class="dots"></div>
+    </footer>
   </main>
   <script type="module" src="widget/widget.js"></script>
 </body>

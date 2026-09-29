@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createJsonFile } from '../core/store.js';
 import { createTimesSource } from '../core/times.js';
 import { buildSnapshot } from '../core/snapshot.js';
+import { startRefresh } from '../core/refresh.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
@@ -28,7 +29,7 @@ function createWindow() {
 // [ipc]
 
 function tick() {
-  const now = new Date();
+  const now = new Date(Date.now() + Number(process.env.WAQT_SHIFT_MS ?? 0));
   const snap = buildSnapshot(timesSource.getDays(), now);
   win.webContents.send('state', snap);
   // [tick]
@@ -37,7 +38,12 @@ function tick() {
 app.whenReady().then(async () => {
   createWindow();
   // [startup]
-  await timesSource.refresh(new Date());
+  startRefresh({
+    refresh: () => timesSource.refresh(new Date()),
+    isMissing: () => Object.keys(timesSource.getDays()).length === 0,
+    everyMs: 5 * 3600e3,
+    retryMs: 60e3,
+  });
   setInterval(tick, 1000);
   tick();
 });
