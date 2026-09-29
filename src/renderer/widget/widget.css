@@ -46,9 +46,22 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 .mark:hover { background: #eaf7f0; }
 .mark:active { transform: scale(.92); }
 .mark.done { background: var(--green); color: #fff; cursor: default; }
-.missed { border: 0; border-radius: 12px; height: 22px; padding: 0 10px; background: #fdecea; color: var(--red);
+.miss-badge { flex: none; border: 0; border-radius: 12px; height: 22px; padding: 0 10px; background: #fdecea; color: var(--red);
   font-size: 12px; font-weight: 700; cursor: pointer; }
-.missed:hover { background: #fadbd8; }
+.miss-badge:hover { background: #fadbd8; }
 
+.chip { border: 0; border-radius: 12px; height: 22px; padding: 0 10px; background: #eef7f1; color: var(--green);
+  font-size: 12px; font-weight: 700; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip:hover { background: #dff0e6; }
+
+.face { position: fixed; inset: 0; box-sizing: border-box; padding: 16px 18px 14px; border-radius: 34px; background: #fff;
+  text-align: center; cursor: pointer; -webkit-app-region: no-drag; display: flex; flex-direction: column; align-items: center; }
+.face[hidden] { display: none; }
+.face-ar { font-family: "Sakkal Majalla", "Traditional Arabic", "Segoe UI", serif; font-size: 40px; line-height: 1.35; color: var(--ink); direction: rtl; }
+.face-tr { font-size: 17px; font-weight: 800; color: var(--ink); margin-top: 2px; }
+.face-tl { font-size: 12px; font-weight: 600; color: var(--orange); margin-top: 1px; }
+.face-desc { font-size: 11px; line-height: 1.35; color: var(--muted); margin-top: 8px; overflow-y: auto; text-align: left; }
+
+[hidden] { display: none !important; }
 button { -webkit-app-region: no-drag; font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

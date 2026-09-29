@@ -1,9 +1,10 @@
 import { computeState } from './state.js';
 import { dateOf } from './tz.js';
 import { PRAYER_NAMES, windowsForDate } from './windows.js';
+import { nameOfDay } from './names.js';
 import { getMark, statusOfWindow } from './marks.js';
 
-export function buildSnapshot(days, marks, now) {
+export function buildSnapshot(days, marks, now, names = []) {
   const s = computeState(days, now);
   if (s.phase === 'nodata') return { ...s, dots: [], missed: [] };
 
@@ -18,11 +19,13 @@ export function buildSnapshot(days, marks, now) {
     .filter((d) => d.status === 'missed')
     .map((d) => ({ date: today, prayer: d.prayer, name: d.name }));
 
-  return {
+  const snap = {
     ...s,
     prayerName: PRAYER_NAMES[s.prayer],
     marked: s.phase === 'prayer' && getMark(marks, s.date, s.prayer) !== null,
     dots,
     missed,
   };
+  if (s.phase === 'gap') snap.name = nameOfDay(names, today);
+  return snap;
 }

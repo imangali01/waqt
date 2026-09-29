@@ -18,7 +18,19 @@ function render(s) {
   renderDots(s.dots ?? []);
   const missed = s.missed ?? [];
   $('missed-btn').hidden = missed.length === 0;
-  $('missed-btn').textContent = missed.length ? `Пропущено: ${missed.length}` : '';
+  $('missed-btn').title = 'Отметить пропущенный намаз как прочитанный позже';
+  $('missed-btn').textContent = missed.length ? `! ${missed.length}` : '';
+  const chip = $('name-chip');
+  chip.hidden = !(s.phase === 'gap' && s.name);
+  if (!chip.hidden) {
+    chip.textContent = s.name.translit;
+    $('face-ar').textContent = s.name.arabic ?? '';
+    $('face-tr').textContent = s.name.translit;
+    $('face-tl').textContent = s.name.translation;
+    $('face-desc').textContent = s.name.description ?? '';
+  } else {
+    $('name-face').hidden = true;
+  }
   $('mark-btn').hidden = s.phase !== 'prayer';
   $('mark-btn').classList.toggle('done', Boolean(s.marked));
 
@@ -60,3 +72,6 @@ window.waqt.onChime(() => {
   a.currentTime = 0;
   a.play().catch(() => {});
 });
+
+$('name-chip').addEventListener('click', () => { $('name-face').hidden = false; });
+$('name-face').addEventListener('click', () => { $('name-face').hidden = true; });

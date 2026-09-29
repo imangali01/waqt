@@ -28,3 +28,11 @@ describe('buildSnapshot', () => {
     expect(s.dots).toEqual([]);
   });
 });
+
+describe('buildSnapshot имя дня', () => {
+  const names = [{ index: 1, translit: 'Ар-Рахман' }];
+  it('имя только в промежутке', () => {
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '05:30'), names).name).toEqual(names[0]);
+    expect(buildSnapshot(DAYS, {}, at('2026-07-01', '13:00'), names).name).toBeUndefined();
+  });
+});
