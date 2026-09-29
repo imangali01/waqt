@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "test": "vitest run",
-    "assets": "node scripts/make-assets.js"
+    "assets": "node scripts/make-assets.js",
+    "dist": "electron-builder --win --publish never"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
@@ -15,6 +16,41 @@
   },
   "devDependencies": {
     "electron": "^33.0.0",
+    "electron-builder": "^26.15.3",
     "vitest": "^2.1.0"
+  },
+  "description": "Виджет времени намаза",
+  "author": "imangali01",
+  "build": {
+    "appId": "kz.waqt.app",
+    "productName": "Waqt",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json",
+      ".env"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "Waqt",
+      "artifactName": "Waqt-Setup-${version}.exe"
+    }
   }
 }
