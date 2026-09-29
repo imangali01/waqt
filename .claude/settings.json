@@ -21,9 +21,7 @@
       "Bash(git tag:*)",
       "Bash(git worktree:*)",
       "Bash(git remote:*)",
-      "Bash(git push:*)",
-      "Bash(gh pr:*)",
-      "Bash(gh release:*)"
+      "Bash(git push:*)"
     ],
     "deny": [
       "Read(./.env)",
