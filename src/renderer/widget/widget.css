@@ -17,7 +17,7 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 
 .middle { flex: 1; display: flex; align-items: center; gap: 10px; min-height: 0; }
 
-.clock { display: flex; align-items: baseline; white-space: nowrap; }
+.clock { display: flex; align-items: baseline; white-space: nowrap; position: relative; }
 .timer { font-size: 46px; font-weight: 900; letter-spacing: -.035em; line-height: 1; color: var(--ink);
   font-variant-numeric: tabular-nums; transition: color .6s ease; }
 .timer.level-warn { color: var(--red); }
@@ -39,6 +39,16 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 .dot.late { background: var(--yellow); }
 .dot.missed { background: var(--red); }
 .dot.pending { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--orange); }
+
+.mark { position: absolute; right: 0; bottom: 2px; width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid var(--green); background: #fff; color: var(--green); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background-color .2s ease, color .2s ease, transform .1s ease; }
+.mark:hover { background: #eaf7f0; }
+.mark:active { transform: scale(.92); }
+.mark.done { background: var(--green); color: #fff; cursor: default; }
+.missed { border: 0; border-radius: 12px; height: 22px; padding: 0 10px; background: #fdecea; color: var(--red);
+  font-size: 12px; font-weight: 700; cursor: pointer; }
+.missed:hover { background: #fadbd8; }
 
 button { -webkit-app-region: no-drag; font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
