@@ -3,8 +3,20 @@ import { windowsForDate } from './windows.js';
 
 const pad = (n) => String(n).padStart(2, '0');
 
+const MIN = 60000;
+
+const hmOf = (d) => new Date(d.getTime() + 5 * 3600e3).toISOString().slice(11, 16);
+const secondsOf = (ms) => pad(Math.floor(Math.max(0, ms) / 1000) % 60);
+
+export function levelFor(ms) {
+  if (ms < 15 * MIN) return 'critical';
+  if (ms < 30 * MIN) return 'warn';
+  return 'normal';
+}
+
 export function formatRemaining(ms) {
   const total = Math.max(0, Math.floor(ms / 1000));
+  if (ms < 15 * MIN) return `${pad(Math.floor(total / 60))}:${pad(total % 60)}`;
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
   return `${h}:${pad(m)}`;
@@ -22,12 +34,12 @@ export function computeState(days, now) {
   const current = windows.find((w) => w.start <= now && now < w.end);
   if (current) {
     const remainingMs = current.end - now;
-    return { phase: 'prayer', prayer: current.prayer, date: current.date, remainingMs, text: formatRemaining(remainingMs) };
+    return { phase: 'prayer', prayer: current.prayer, date: current.date, remainingMs, level: levelFor(remainingMs), text: formatRemaining(remainingMs), seconds: secondsOf(remainingMs), atText: hmOf(current.end), progress: remainingMs / (current.end - current.start) };
   }
   const next = windows.find((w) => w.start > now);
   if (next) {
     const remainingMs = next.start - now;
-    return { phase: 'gap', prayer: next.prayer, date: next.date, remainingMs, text: formatRemaining(remainingMs) };
+    return { phase: 'gap', prayer: next.prayer, date: next.date, remainingMs, level: 'normal', text: formatRemaining(remainingMs), seconds: secondsOf(remainingMs), atText: hmOf(next.start), progress: null };
   }
   return { phase: 'nodata' };
 }

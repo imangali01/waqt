@@ -7,4 +7,4 @@ export const DAYS = {
   '2026-07-01': T(),
   '2026-07-02': T({ fajr: '03:02' }),
 };
-export const at = (date, hm) => new Date(`${date}T${hm}:00+05:00`);
+export const at = (date, hm) => new Date(hm.length > 5 ? `${date}T${hm}+05:00` : `${date}T${hm}:00+05:00`);

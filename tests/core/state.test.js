@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeState, formatRemaining } from '../../src/core/state.js';
+import { computeState, formatRemaining, levelFor } from '../../src/core/state.js';
 import { DAYS, at } from '../fixtures.js';
 
 describe('formatRemaining', () => {
@@ -24,5 +24,53 @@ describe('computeState', () => {
   });
   it('нет данных', () => {
     expect(computeState({}, at('2026-07-01', '13:00'))).toEqual({ phase: 'nodata' });
+  });
+});
+
+describe('levelFor', () => {
+  it('пороги 30 и 15 минут', () => {
+    expect(levelFor(30 * 60e3)).toBe('normal');
+    expect(levelFor(30 * 60e3 - 1)).toBe('warn');
+    expect(levelFor(15 * 60e3)).toBe('warn');
+    expect(levelFor(15 * 60e3 - 1)).toBe('critical');
+  });
+});
+
+describe('formatRemaining секунды', () => {
+  it('с 15 минут ММ:СС', () => {
+    expect(formatRemaining(15 * 60e3)).toBe('0:15');
+    expect(formatRemaining(14 * 60e3 + 59e3)).toBe('14:59');
+    expect(formatRemaining(5e3)).toBe('00:05');
+  });
+});
+
+describe('computeState level', () => {
+  it('в окне намаза считает уровень, в промежутке normal', () => {
+    expect(computeState(DAYS, at('2026-07-01', '19:50')).level).toBe('warn');
+    expect(computeState(DAYS, at('2026-07-01', '20:00')).level).toBe('critical');
+    expect(computeState(DAYS, at('2026-07-01', '13:00')).level).toBe('normal');
+    expect(computeState(DAYS, at('2026-07-01', '05:30')).level).toBe('normal');
+  });
+});
+
+describe('seconds и progress', () => {
+  it('seconds — две цифры остатка секунд', () => {
+    const s = computeState(DAYS, at('2026-07-01', '13:00:07'));
+    expect(s.seconds).toBe('53');
+  });
+  it('progress — доля оставшегося времени окна намаза', () => {
+    // Зухр 12:30–17:40 (310 мин); в 15:05 осталось 155 мин → 0.5
+    expect(computeState(DAYS, at('2026-07-01', '15:05')).progress).toBeCloseTo(0.5, 5);
+  });
+  it('в промежутке progress = null', () => {
+    expect(computeState(DAYS, at('2026-07-01', '05:30')).progress).toBeNull();
+  });
+});
+
+describe('atText', () => {
+  it('в окне намаза — время конца, в промежутке — время начала (Астана)', () => {
+    expect(computeState(DAYS, at('2026-07-01', '13:00')).atText).toBe('17:40');
+    expect(computeState(DAYS, at('2026-07-01', '05:30')).atText).toBe('12:30');
+    expect(computeState(DAYS, at('2026-07-02', '00:30')).atText).toBe('03:02');
   });
 });
