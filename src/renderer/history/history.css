@@ -14,12 +14,17 @@ html.history-mode #widget { display: none; }
 .h-nav button:hover { background: #e6e9eb; }
 .h-nav .h-close { color: #E53935; width: 34px; padding: 0; }
 
-.h-table { flex: 1; display: grid; gap: 8px; align-content: start; overflow: hidden; }
+.h-streak { display: inline-block; vertical-align: middle; margin-left: 10px; padding: 3px 12px; border-radius: 14px;
+  background: #f1f3f4; color: #7d848b; font-size: 14px; font-weight: 700; letter-spacing: 0; }
+.h-streak.on { background: #fff1e2; color: #F08A1C; }
+
+/* Таблица занимает всю высоту окна: заголовок с датами + пять равных строк. */
+.h-table { flex: 1; min-height: 0; display: grid; grid-template-rows: auto repeat(5, minmax(46px, 1fr)); gap: 8px; }
 .h-row { display: grid; grid-template-columns: 76px repeat(14, minmax(0, 1fr)); gap: 6px; align-items: center; }
 .h-date { font-size: 12px; font-weight: 700; text-align: center; color: #7d848b; }
 .h-date.today { color: #F08A1C; }
 .h-prayer { font-size: 14px; font-weight: 700; }
-.cell { height: 46px; padding: 0; overflow: hidden; border: 0; border-radius: 12px; background: #eceff1; color: #98a0a6; font: inherit; font-size: 12px; font-weight: 600;
+.cell { height: 100%; min-height: 46px; padding: 0; overflow: hidden; border: 0; border-radius: 12px; background: #eceff1; color: #98a0a6; font: inherit; font-size: 12px; font-weight: 600;
   cursor: default; transition: transform .1s ease, background-color .2s ease; }
 .cell.on_time { background: #bfe6cc; color: #17603a; cursor: pointer; }
 .cell.late { background: #ffe38a; color: #7a5a00; cursor: pointer; }

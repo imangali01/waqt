@@ -38,7 +38,9 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 .bar i.level-critical { background: var(--maroon); }
 
 .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; height: 14px; }
-.place { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.streak { display: inline-flex; align-items: center; gap: 4px; color: #b3b9be; font-size: 14px; font-weight: 800; }
+.streak b { font-weight: 800; font-variant-numeric: tabular-nums; }
+.streak.on { color: var(--orange); }
 .dots { display: flex; gap: 6px; }
 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gray); transition: background-color .3s ease; }
 .dot.on_time { background: var(--green); }

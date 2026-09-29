@@ -1,3 +1,5 @@
+import { daysWord } from '../../core/plural.js';
+
 const $ = (id) => document.getElementById(id);
 const NAMES = { fajr: 'Фаджр', dhuhr: 'Зухр', asr: 'Аср', maghrib: 'Магриб', isha: 'Иша' };
 const PRAYERS = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -69,6 +71,12 @@ $('h-prev').addEventListener('click', () => { start = shift(start, -7); load(); 
 $('h-next').addEventListener('click', () => { start = shift(start, 7); load(); });
 $('h-month').addEventListener('change', (e) => {
   if (e.target.value) { start = `${e.target.value}-01`; load(); }
+});
+
+window.waqt.onState((s) => {
+  const n = s.streak ?? 0;
+  $('h-streak').textContent = `Серия: ${n} ${daysWord(n)}`;
+  $('h-streak').classList.toggle('on', n > 0);
 });
 
 window.waqt.onView((v) => (v === 'history' ? enterHistory() : leaveHistory()));

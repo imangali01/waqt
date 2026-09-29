@@ -1,5 +1,15 @@
+import { daysWord } from '../../core/plural.js';
+
 const $ = (id) => document.getElementById(id);
 let current = null;
+
+function renderStreak(n) {
+  $('streak-n').textContent = n;
+  $('streak').classList.toggle('on', n > 0);
+  $('streak').title = n > 0
+    ? `Серия: ${n} ${daysWord(n)} подряд, все 5 намазов вовремя`
+    : 'Серия начнётся, когда все 5 намазов будут прочитаны вовремя';
+}
 
 function renderDots(dots) {
   $('dots').replaceChildren(
@@ -15,6 +25,7 @@ function renderDots(dots) {
 function render(s) {
   current = s;
   renderDots(s.dots ?? []);
+  renderStreak(s.streak ?? 0);
   const missed = s.missed ?? [];
   $('missed-btn').hidden = missed.length === 0;
   $('missed-btn').title = 'Отметить пропущенный намаз как прочитанный позже';
