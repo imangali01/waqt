@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,6 +12,7 @@ import { setMark, decideStatus, trackDay } from '../core/marks.js';
 import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
+import { clampToDisplays } from '../core/window-state.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
@@ -27,11 +28,15 @@ try {
 } catch { /* имён нет — блок не показывается */ }
 
 let win;
+let tray;
+let quitting = false;
 
 function createWindow() {
+  const pos = clampToDisplays(store.data.window, screen.getAllDisplays());
   win = new BrowserWindow({
     width: 200, height: 200, frame: false, transparent: true, resizable: false,
-    alwaysOnTop: true, hasShadow: false, show: true,
+    alwaysOnTop: true, hasShadow: false, show: true, skipTaskbar: true,
+    ...(pos ?? {}),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true, nodeIntegration: false, sandbox: true,
@@ -39,6 +44,18 @@ function createWindow() {
     },
   });
   win.setAlwaysOnTop(true, 'screen-saver');
+  let moveTimer;
+  win.on('moved', () => {
+    clearTimeout(moveTimer);
+    moveTimer = setTimeout(() => {
+      const [x, y] = win.getPosition();
+      store.data.window = { x, y };
+      store.save();
+    }, 300);
+  });
+  win.on('close', (e) => {
+    if (!quitting) { e.preventDefault(); win.hide(); }
+  });
   win.loadFile(path.join(__dirname, '../renderer/index.html'));
 }
 
@@ -77,7 +94,10 @@ function tick() {
 }
 
 app.whenReady().then(async () => {
+  if (!gotLock) return;
   createWindow();
+  createTray();
+  setupAutostart();
   // [startup]
   startRefresh({
     refresh: () => timesSource.refresh(new Date()),
@@ -89,4 +109,37 @@ app.whenReady().then(async () => {
   tick();
 });
 
-app.on('window-all-closed', () => app.quit());
+app.on('before-quit', () => { quitting = true; });
+
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) app.quit();
+app.on('second-instance', () => showWidget());
+
+function showWidget() {
+  if (!win) return;
+  win.show();
+  win.setAlwaysOnTop(true, 'screen-saver');
+}
+
+function toggleWidget() {
+  if (win.isVisible()) win.hide(); else showWidget();
+}
+
+function createTray() {
+  tray = new Tray(nativeImage.createFromPath(path.join(__dirname, '../../assets/tray.png')));
+  tray.setToolTip('Waqt');
+  tray.setContextMenu(Menu.buildFromTemplate([
+    { label: 'Показать / Скрыть', click: toggleWidget },
+    { label: 'История', click: () => { showWidget(); /* [tray-history] */ } },
+    { label: 'Выйти', click: () => { quitting = true; app.quit(); } },
+  ]));
+  tray.on('click', toggleWidget);
+}
+
+function setupAutostart() {
+  // Только для установленного приложения: в dev-режиме не трогаем автозагрузку Windows.
+  if (!app.isPackaged || store.data.settings.autostartSet) return;
+  app.setLoginItemSettings({ openAtLogin: true });
+  store.data.settings.autostartSet = true;
+  store.save();
+}
