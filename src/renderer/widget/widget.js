@@ -1,5 +1,4 @@
 const $ = (id) => document.getElementById(id);
-const FIFTEEN_MIN = 15 * 60 * 1000;
 let current = null;
 
 function renderDots(dots) {
@@ -50,7 +49,7 @@ function render(s) {
   $('sub').textContent = s.phase === 'prayer' ? `до ${s.atText}` : `в ${s.atText}`;
   $('timer').textContent = s.text;
   $('timer').className = `timer level-${level}`;
-  $('seconds').textContent = s.remainingMs >= FIFTEEN_MIN ? `:${s.seconds}` : '';
+  $('seconds').textContent = `:${s.seconds}`;
   $('bar').className = `level-${level}`;
   $('bar').style.width = s.progress == null ? '0' : `${Math.round(s.progress * 100)}%`;
 }

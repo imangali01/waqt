@@ -36,11 +36,16 @@ describe('levelFor', () => {
   });
 });
 
-describe('formatRemaining секунды', () => {
-  it('с 15 минут ММ:СС', () => {
+describe('formatRemaining: единый формат Ч:ММ (секунды отдельным полем)', () => {
+  it('в последние 15 минут тоже Ч:ММ, а не ММ:СС', () => {
     expect(formatRemaining(15 * 60e3)).toBe('0:15');
-    expect(formatRemaining(14 * 60e3 + 59e3)).toBe('14:59');
-    expect(formatRemaining(5e3)).toBe('00:05');
+    expect(formatRemaining(14 * 60e3 + 59e3)).toBe('0:14');
+    expect(formatRemaining(5e3)).toBe('0:00');
+  });
+  it('seconds есть в любом состоянии', () => {
+    expect(computeState(DAYS, at('2026-07-01', '19:50:10')).seconds).toBe('50');
+    expect(computeState(DAYS, at('2026-07-01', '20:00:30')).seconds).toBe('30');
+    expect(computeState(DAYS, at('2026-07-01', '05:30:15')).seconds).toBe('45');
   });
 });
 
