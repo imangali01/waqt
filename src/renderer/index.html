@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; media-src 'self'">
   <link rel="stylesheet" href="widget/widget.css">
+  <link rel="stylesheet" href="history/history.css">
 </head>
 <body>
   <main class="card" id="widget">
@@ -13,12 +14,12 @@
         <div id="label" class="who-name">…</div>
         <div id="sub" class="who-sub"></div>
       </div>
-      <span class="crescent" aria-hidden="true">
+      <button id="history-btn" class="crescent" title="История намазов">
         <svg viewBox="0 0 24 24" width="26" height="26">
           <circle cx="12" cy="12" r="10.5" fill="none" stroke="#2BA36B" stroke-width="1.8"/>
           <path d="M14.6 6.6a5.7 5.7 0 1 0 2.8 9.6a4.6 4.6 0 0 1-2.8-9.6z" fill="#2BA36B"/>
         </svg>
-      </span>
+      </button>
     </header>
     <div id="middle" class="middle">
       <button id="name-chip" class="chip" title="Имя Аллаха дня" hidden></button>
@@ -46,6 +47,26 @@
     <div id="face-desc" class="face-desc"></div>
   </section>
   <audio id="chime" src="../../assets/chime.wav" preload="auto"></audio>
+  <section id="history" class="history-card" hidden>
+    <header class="h-head">
+      <div class="h-title">История намазов</div>
+      <div class="h-nav">
+        <button id="h-prev" title="На неделю назад">‹</button>
+        <input id="h-month" type="month" title="Месяц">
+        <button id="h-next" title="На неделю вперёд">›</button>
+        <button id="h-close" class="h-close" title="Закрыть">✕</button>
+      </div>
+    </header>
+    <div id="h-table" class="h-table"></div>
+    <footer class="h-legend">
+      <span class="lg on_time">вовремя</span>
+      <span class="lg late">позже</span>
+      <span class="lg missed">пропущен</span>
+      <span class="lg nodata">нет данных</span>
+      <span class="hint">Клик: красный или серый — «прочитан позже», зелёный или жёлтый — отменить</span>
+    </footer>
+  </section>
   <script type="module" src="widget/widget.js"></script>
+  <script type="module" src="history/history.js"></script>
 </body>
 </html>
