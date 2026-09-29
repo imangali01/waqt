@@ -66,6 +66,27 @@ $('missed-btn').addEventListener('click', async () => {
   if (first) await window.waqt.markMissed(first.date, first.prayer);
 });
 
+// Азан: только первые AZAN_MS миллисекунд, последние FADE_MS плавно затихает.
+const AZAN_MS = 5000;
+const FADE_MS = 700;
+let azanTimer;
+
+window.waqt.onAzan(() => {
+  const a = $('azan');
+  clearTimeout(azanTimer);
+  a.volume = 1;
+  a.currentTime = 0;
+  a.play().catch(() => {});
+  const start = performance.now();
+  const fade = () => {
+    const left = AZAN_MS - (performance.now() - start);
+    if (left <= 0) { a.pause(); a.volume = 1; return; }
+    a.volume = Math.min(1, left / FADE_MS);
+    azanTimer = setTimeout(fade, 50);
+  };
+  fade();
+});
+
 window.waqt.onChime(() => {
   const a = $('chime');
   a.currentTime = 0;

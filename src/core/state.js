@@ -33,7 +33,7 @@ export function computeState(days, now) {
   const current = windows.find((w) => w.start <= now && now < w.end);
   if (current) {
     const remainingMs = current.end - now;
-    return { phase: 'prayer', prayer: current.prayer, date: current.date, remainingMs, level: levelFor(remainingMs), text: formatRemaining(remainingMs), seconds: secondsOf(remainingMs), atText: hmOf(current.end), progress: remainingMs / (current.end - current.start) };
+    return { phase: 'prayer', prayer: current.prayer, date: current.date, remainingMs, level: levelFor(remainingMs), text: formatRemaining(remainingMs), seconds: secondsOf(remainingMs), atText: hmOf(current.end), elapsedMs: now - current.start, progress: remainingMs / (current.end - current.start) };
   }
   const next = windows.find((w) => w.start > now);
   if (next) {
