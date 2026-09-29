@@ -10,6 +10,7 @@ import { computeState } from '../core/state.js';
 import { setMark, decideStatus, trackDay } from '../core/marks.js';
 import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
+import { dueReminder } from '../core/reminders.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
@@ -17,6 +18,8 @@ const timesSource = createTimesSource({ file: createJsonFile(path.join(userData,
 
 const store = createData(createJsonFile(path.join(userData, 'data.json')));
 const nowDate = () => new Date(Date.now() + Number(process.env.WAQT_SHIFT_MS ?? 0));
+
+const fired = new Set();
 
 let win;
 
@@ -60,6 +63,11 @@ function tick() {
   if (trackDay(store.data.tracked, timesSource.getDays(), dateOf(now))) store.save();
   const snap = buildSnapshot(timesSource.getDays(), store.data.marks, now);
   win.webContents.send('state', snap);
+  const due = dueReminder({ snap, fired });
+  if (due) {
+    fired.add(due.key);
+    win.webContents.send('chime', due.minutes);
+  }
   // [tick]
 }
 
