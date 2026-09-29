@@ -1,0 +1,19 @@
+{
+  "name": "waqt",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "vitest run",
+    "assets": "node scripts/make-assets.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "vitest": "^2.1.0"
+  }
+}
