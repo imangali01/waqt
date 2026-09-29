@@ -54,3 +54,9 @@ $('missed-btn').addEventListener('click', async () => {
   const first = current?.missed?.[0];
   if (first) await window.waqt.markMissed(first.date, first.prayer);
 });
+
+window.waqt.onChime(() => {
+  const a = $('chime');
+  a.currentTime = 0;
+  a.play().catch(() => {});
+});
