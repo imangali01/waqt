@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['site/**', 'src/core/**', 'src/web/**', 'src/renderer/widget/**', 'src/renderer/i18n-dom.js', 'assets/**', 'scripts/build-site.js', 'scripts/png.js', 'scripts/icon.js']
+    paths: ['site/**', 'src/core/**', 'src/web/**', 'assets/**', 'scripts/build-site.js', 'scripts/png.js', 'scripts/icon.js']
 
 permissions:
   contents: read
