@@ -159,7 +159,6 @@ async function renderHistory() {
   const rows = [];
   const head = document.createElement('div');
   head.className = 'h-row';
-  head.append(document.createElement('span'));
   for (const c of cols) {
     const d = document.createElement('span');
     d.className = `h-date${c.date === today ? ' today' : ''}`;
@@ -167,13 +166,13 @@ async function renderHistory() {
     head.append(d);
   }
   rows.push(head);
+  const labels = [];
   for (const prayer of ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha']) {
+    const label = document.createElement('span');
+    label.textContent = prayerName(lang, prayer);
+    labels.push(label);
     const row = document.createElement('div');
     row.className = 'h-row';
-    const name = document.createElement('span');
-    name.className = 'h-name';
-    name.textContent = prayerName(lang, prayer);
-    row.append(name);
     for (const c of cols) {
       const status = c.cells.find((x) => x.prayer === prayer).status;
       const cell = document.createElement('button');
@@ -184,6 +183,7 @@ async function renderHistory() {
     }
     rows.push(row);
   }
+  $('hist-names').replaceChildren(...labels);
   $('hist').replaceChildren(...rows);
   // Свежие дни справа: прокручиваем к концу.
   const sc = document.querySelector('.hist-scroll');
