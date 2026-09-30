@@ -26,7 +26,7 @@ create index if not exists prayer_marks_user_synced on public.prayer_marks (user
 
 -- Серверный курсор синхронизации и last-write-wins на стороне сервера:
 -- synced_at ставится часами сервера, а более старая версия не затирает новую.
-create or replace function public.prayer_marks_guard() returns trigger language plpgsql as $$
+create or replace function public.prayer_marks_guard() returns trigger language plpgsql set search_path = '' as $$
 begin
   if tg_op = 'UPDATE' and new.updated_at < old.updated_at then
     return null;
@@ -44,8 +44,8 @@ alter table public.prayer_marks enable row level security;
 
 drop policy if exists "own days" on public.prayer_days;
 create policy "own days" on public.prayer_days
-  for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+  for all using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 
 drop policy if exists "own marks" on public.prayer_marks;
 create policy "own marks" on public.prayer_marks
-  for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+  for all using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
