@@ -1,3 +1,4 @@
+html.history-mode { zoom: 1 !important; }
 html.history-mode, html.history-mode body { width: 100vw; height: 100vh; }
 html.history-mode #widget { display: none; }
 
