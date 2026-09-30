@@ -103,3 +103,50 @@ html.compact .dots { gap: 5px; }
 html.compact .dot { width: 7px; height: 7px; }
 html.compact .dot.pending { box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px var(--orange); }
 html.compact .face { border-radius: 26px; }
+
+/* Средний вид 150x150 */
+html.medium, html.medium body { width: 150px; height: 150px; }
+html.medium .card { width: 150px; height: 150px; border-radius: 28px; padding: 12px 13px 11px; }
+html.medium .kicker, html.medium .middle { display: none; }
+html.medium .who-name { font-size: 19px; margin-top: 0; }
+html.medium .who-sub { font-size: 11px; margin-top: 1px; }
+html.medium .tools { gap: 3px; flex-direction: row; }
+html.medium .crescent svg { width: 22px; height: 22px; }
+html.medium .clock { flex: 1; align-items: center; }
+html.medium .timer { font-size: 34px; }
+html.medium .seconds { font-size: 14px; }
+html.medium .mark { width: 28px; height: 28px; bottom: auto; top: 50%; transform: translateY(-50%); }
+html.medium .mark:active { transform: translateY(-50%) scale(.92); }
+html.medium .mark svg { width: 15px; height: 15px; }
+html.medium .foot { margin-top: 6px; height: 10px; }
+html.medium .streak { font-size: 11px; gap: 3px; }
+html.medium .streak svg { width: 11px; height: 11px; }
+html.medium .dots { gap: 4px; }
+html.medium .dot { width: 7px; height: 7px; }
+html.medium .face { border-radius: 28px; }
+
+/* Узкий вид 75x150: всё в столбик */
+html.narrow, html.narrow body { width: 75px; height: 150px; }
+html.narrow .card { width: 75px; height: 150px; border-radius: 22px; padding: 9px 8px 9px; align-items: center; text-align: center; }
+html.narrow .kicker, html.narrow .middle, html.narrow .who-sub { display: none; }
+html.narrow .top { flex-direction: column-reverse; align-items: center; width: 100%; gap: 2px; }
+html.narrow .who { width: 100%; }
+html.narrow .who-name { font-size: 14px; margin-top: 0; }
+html.narrow .tools { gap: 6px; }
+html.narrow .crescent svg { width: 18px; height: 18px; }
+html.narrow .viewbtn svg { width: 14px; height: 14px; }
+html.narrow .clock { flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 0; width: 100%; }
+html.narrow .timer { font-size: 27px; letter-spacing: -.045em; }
+html.narrow .seconds { font-size: 12px; margin: 0; }
+html.narrow .mark { position: static; width: 24px; height: 24px; margin-top: 3px; }
+html.narrow .mark svg { width: 13px; height: 13px; }
+html.narrow .bar { width: 100%; margin-top: 3px; }
+html.narrow .foot { flex-direction: column; height: auto; gap: 4px; margin-top: 5px; align-items: center; }
+html.narrow .streak { font-size: 10px; gap: 2px; }
+html.narrow .streak svg { width: 10px; height: 10px; }
+html.narrow .dots { gap: 3px; }
+html.narrow .dot { width: 7px; height: 7px; }
+html.narrow .face { border-radius: 22px; padding: 8px 6px; }
+html.narrow .face-ar { font-size: 24px; }
+html.narrow .face-tr { font-size: 12px; }
+html.narrow .face-tl, html.narrow .face-desc { display: none; }

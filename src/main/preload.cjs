@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld('waqt', {
   onAzan: (cb) => ipcRenderer.on('azan', () => cb()),
   onView: (cb) => ipcRenderer.on('view', (_e, v) => cb(v)),
   onOpenHistoryRequest: (cb) => ipcRenderer.on('open-history-request', () => cb()),
-  onMode: (cb) => ipcRenderer.on('mode', (_e, m) => cb(m)),
+  onMode: (cb) => ipcRenderer.on('mode', (_e, m, all) => cb(m, all)),
   setView: (mode) => ipcRenderer.invoke('view:set', mode),
   mark: () => ipcRenderer.invoke('mark:current'),
   markMissed: (date, prayer) => ipcRenderer.invoke('mark:missed', date, prayer),

@@ -1,4 +1,10 @@
-const SIZES = { full: { width: 200, height: 200 }, compact: { width: 200, height: 100 } };
+const SIZES = {
+  full: { width: 200, height: 200 },
+  compact: { width: 200, height: 100 },
+  medium: { width: 150, height: 150 },
+  narrow: { width: 75, height: 150 },
+};
+export const VIEW_MODES = Object.keys(SIZES);
 
 export const normalizeViewMode = (m) => (m in SIZES ? m : 'full');
 export const viewSize = (mode) => ({ ...SIZES[normalizeViewMode(mode)] });
