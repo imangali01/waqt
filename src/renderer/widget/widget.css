@@ -74,3 +74,22 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 [hidden] { display: none !important; }
 button { -webkit-app-region: no-drag; font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.tools { display: flex; align-items: center; gap: 6px; }
+.viewbtn { border: 0; background: none; padding: 2px; line-height: 0; color: #b3b9be; cursor: pointer; border-radius: 50%; }
+.viewbtn:hover { color: var(--ink); }
+
+/* Компактный вид 200x100 */
+html.compact, html.compact body { height: 100px; }
+html.compact .card { height: 100px; border-radius: 26px; padding: 9px 14px 11px; }
+html.compact .kicker, html.compact .who-sub, html.compact .middle, html.compact .foot { display: none; }
+html.compact .who-name { font-size: 16px; margin-top: 0; }
+html.compact .crescent svg { width: 20px; height: 20px; }
+html.compact .clock { flex: 1; align-items: center; }
+html.compact .timer { font-size: 34px; }
+html.compact .seconds { font-size: 15px; }
+html.compact .mark { width: 30px; height: 30px; bottom: auto; top: 50%; transform: translateY(-50%); }
+html.compact .mark:active { transform: translateY(-50%) scale(.92); }
+html.compact .mark svg { width: 16px; height: 16px; }
+html.compact .bar { margin-top: 4px; }
+html.compact .face { border-radius: 26px; }

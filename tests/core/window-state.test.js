@@ -17,3 +17,20 @@ describe('clampToDisplays', () => {
     expect(clampToDisplays({ x: 1800, y: 1000 }, displays)).toEqual({ x: 1720, y: 840 });
   });
 });
+
+import { viewSize, normalizeViewMode } from '../../src/core/window-state.js';
+
+describe('viewSize / normalizeViewMode', () => {
+  it('полный вид 200x200, компактный 200x100', () => {
+    expect(viewSize('full')).toEqual({ width: 200, height: 200 });
+    expect(viewSize('compact')).toEqual({ width: 200, height: 100 });
+  });
+  it('неизвестный режим — полный', () => {
+    expect(normalizeViewMode('bogus')).toBe('full');
+    expect(normalizeViewMode(undefined)).toBe('full');
+    expect(normalizeViewMode('compact')).toBe('compact');
+  });
+  it('clampToDisplays учитывает высоту компактного окна', () => {
+    expect(clampToDisplays({ x: 100, y: 1000 }, displays, { width: 200, height: 100 })).toEqual({ x: 100, y: 940 });
+  });
+});

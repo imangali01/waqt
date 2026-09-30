@@ -111,3 +111,12 @@ window.waqt.onSync((s) => {
   $('sync').hidden = s.ok || s.reason === 'no-session' && false;
   $('sync').title = s.ok ? '' : `Не синхронизировано: ${s.reason}`;
 });
+
+let mode = 'full';
+window.waqt.onMode((m) => {
+  mode = m;
+  document.documentElement.classList.toggle('compact', m === 'compact');
+  $('view-btn').title = m === 'compact' ? 'Обычный вид' : 'Компактный вид';
+  $('view-ico').setAttribute('d', m === 'compact' ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6');
+});
+$('view-btn').addEventListener('click', () => window.waqt.setView(mode === 'compact' ? 'full' : 'compact'));
