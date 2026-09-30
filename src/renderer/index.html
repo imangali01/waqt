@@ -20,8 +20,9 @@
       </button>
       <button id="history-btn" class="crescent" title="История намазов">
         <svg viewBox="0 0 24 24" width="26" height="26">
-          <circle cx="12" cy="12" r="10.5" fill="none" stroke="#2BA36B" stroke-width="1.8"/>
-          <path d="M14.6 6.6a5.7 5.7 0 1 0 2.8 9.6a4.6 4.6 0 0 1-2.8-9.6z" fill="#2BA36B"/>
+          <defs><mask id="moon"><rect width="24" height="24" fill="#fff"/><circle cx="14.4" cy="12" r="5.28" fill="#000"/></mask></defs>
+          <circle cx="12" cy="12" r="10.4" fill="#fff" stroke="#2BA36B" stroke-width="1.7"/>
+          <circle cx="11.28" cy="12" r="6.48" fill="#2BA36B" mask="url(#moon)"/>
         </svg>
       </button>
       </div>
