@@ -15,3 +15,4 @@ site/app/names.json
 site/app/chime.wav
 site/assets/
 .vercel
+.env*
