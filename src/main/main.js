@@ -126,7 +126,27 @@ async function setViewMode(mode) {
   return true;
 }
 
-ipcMain.handle('view:set', (_e, mode) => setViewMode(mode));
+ipcMain.handle('view:set', async (_e, mode) => {
+  const ok = await setViewMode(mode);
+  settingsWin?.webContents.send('settings', { viewMode });
+  return ok;
+});
+ipcMain.handle('settings:get', () => ({ viewMode, modes: VIEW_MODES }));
+ipcMain.handle('settings:open', () => openSettings());
+
+let settingsWin = null;
+function openSettings() {
+  if (settingsWin) { settingsWin.focus(); return; }
+  settingsWin = new BrowserWindow({
+    width: 380, height: 460, useContentSize: true, resizable: false, autoHideMenuBar: true, title: 'Настройки Waqt', alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.cjs'),
+      contextIsolation: true, nodeIntegration: false, sandbox: true,
+    },
+  });
+  settingsWin.loadFile(path.join(__dirname, '../renderer/settings.html'));
+  settingsWin.on('closed', () => { settingsWin = null; });
+}
 
 ipcMain.handle('mark:current', () => {
   const now = nowDate();
@@ -305,12 +325,7 @@ function createTray() {
 function buildTrayMenu() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Показать / Скрыть', click: toggleWidget },
-    { label: 'Вид окна', submenu: [
-      { label: 'Обычный 180×180', type: 'radio', checked: viewMode === 'full', click: () => setViewMode('full') },
-      { label: 'Компактный 180×90', type: 'radio', checked: viewMode === 'compact', click: () => setViewMode('compact') },
-      { label: 'Средний 150×150', type: 'radio', checked: viewMode === 'medium', click: () => setViewMode('medium') },
-      { label: 'Полоса 150×75', type: 'radio', checked: viewMode === 'strip', click: () => setViewMode('strip') },
-    ] },
+    { label: 'Настройки', click: openSettings },
     { label: 'История', click: () => { showWidget(); win.webContents.send('open-history-request'); } },
     { label: 'Войти в аккаунт', click: openLogin },
     { label: 'Выйти', click: () => { quitting = true; app.quit(); } },
