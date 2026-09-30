@@ -60,3 +60,29 @@ begin
     alter publication supabase_realtime add table public.prayer_marks;
   end if;
 end $$;
+
+-- Push-уведомления на телефон (веб-версия). Подписку создаёт сам браузер пользователя.
+create table if not exists public.push_subscriptions (
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  endpoint text not null,
+  p256dh text not null,
+  auth text not null,
+  lang text not null default 'ru',
+  created_at timestamptz not null default now(),
+  primary key (user_id, endpoint)
+);
+
+-- Журнал отправленных push (защита от дублей). Пишет только Edge Function, клиентам недоступен.
+create table if not exists public.push_sent (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  key text not null,
+  sent_at timestamptz not null default now(),
+  primary key (user_id, key)
+);
+
+alter table public.push_subscriptions enable row level security;
+alter table public.push_sent enable row level security;
+
+drop policy if exists "own push" on public.push_subscriptions;
+create policy "own push" on public.push_subscriptions
+  for all using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));

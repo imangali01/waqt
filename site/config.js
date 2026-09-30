@@ -2,3 +2,5 @@
 export const SUPABASE_URL = 'https://xzmezgwdwqrfgbhxgdsu.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_ehoc5pIjyDLjaDCRYPEjDA_6JXMWt0l';
 export const AUTH_STORAGE_KEY = 'waqt.auth';
+// Публичный ключ VAPID для web-push (пара к приватному в секретах Supabase). Пусто — уведомления отключены.
+export const VAPID_PUBLIC_KEY = '';

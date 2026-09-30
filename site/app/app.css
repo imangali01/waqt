@@ -33,6 +33,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .circle { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--glass-line); background: rgba(255, 255, 255, .16); display: grid; place-items: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0; }
 .circle.text { font-weight: 800; font-size: 13px; letter-spacing: .02em; }
 .circle:active { transform: scale(.94); }
+.circle.off { opacity: .55; }
 .tr { text-align: end; color: var(--muted); }
 .city { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 17px; color: rgba(255, 255, 255, .85); }
 .date { font-size: 14px; margin-top: 3px; }

@@ -3,6 +3,8 @@ import { t, LANGS, prayerName, daysLabel, normalizeLang } from './src/core/i18n.
 import { nameOfDay } from './src/core/names.js';
 import { addDays, dateOf } from './src/core/tz.js';
 import { subscribeMarks } from './src/core/realtime.js';
+import { pushState, enablePush, disablePush, updatePushLang, pushSupported } from './push.js';
+import { VAPID_PUBLIC_KEY } from '../config.js';
 
 const $ = (id) => document.getElementById(id);
 const AUTH_KEY = 'waqt.auth';
@@ -203,9 +205,30 @@ api.onState((s) => {
   renderRows();
 });
 
+// Кнопка уведомлений: появляется после входа, если ключ VAPID задан и браузер умеет push
+// (на iPhone — только когда сайт добавлен «На экран Домой»).
+let pushClient = null;
+async function renderPush() {
+  const btn = $('push-btn');
+  const st = pushClient && VAPID_PUBLIC_KEY && pushSupported() ? await pushState() : 'unsupported';
+  btn.hidden = st === 'unsupported';
+  btn.classList.toggle('off', st !== 'on');
+  btn.title = t(lang, st === 'on' ? 'push.on' : st === 'denied' ? 'push.denied' : 'push.off');
+  btn.setAttribute('aria-label', btn.title);
+}
+$('push-btn').addEventListener('click', async () => {
+  try {
+    if (await pushState() === 'on') await disablePush({ client: pushClient });
+    else await enablePush({ client: pushClient, vapidKey: VAPID_PUBLIC_KEY, lang });
+  } catch { /* нет сети или отказ — состояние кнопки покажет результат */ }
+  renderPush();
+});
+
 api.onLang((l) => {
   lang = normalizeLang(l);
   applyStatic();
+  renderPush();
+  if (pushClient) updatePushLang({ client: pushClient, lang }).catch(() => {});
   rowsKey = ''; histKey = '';
   if (snap) { renderNow(); renderStreak(); renderName(); renderRows(); }
 });
@@ -237,11 +260,15 @@ if (!embed) {
       btn.hidden = false;
       btn.addEventListener('click', async () => {
         if (!confirm(t(lang, 'app.logout') + '?')) return;
+        // Подписку убираем до выхода: после него RLS уже не даст её удалить.
+        await disablePush({ client }).catch(() => {});
         await signOut();
         try { localStorage.removeItem(AUTH_KEY); } catch { /* ignore */ }
         location.replace('../');
       });
       if (user) {
+        pushClient = client;
+        renderPush();
         syncNow().then(tick);
         // Отметки с других устройств (десктоп) приходят сразу.
         subscribeMarks({ client, userId: user.id, onChange: () => syncNow().then(tick) });

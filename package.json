@@ -11,7 +11,8 @@
     "dist": "electron-builder --win --publish never",
     "pack:win": "node scripts/make-package.js",
     "dist:mac": "electron-builder --mac --publish never",
-    "site:build": "node scripts/build-site.js"
+    "site:build": "node scripts/build-site.js",
+    "functions:build": "node scripts/build-functions.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
