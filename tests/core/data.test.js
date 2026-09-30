@@ -21,3 +21,9 @@ describe('viewMode по умолчанию', () => {
     expect(_cd({ read: (d) => d, write() {} }).data.settings.viewMode).toBe('full');
   });
 });
+
+describe('taskbar по умолчанию', () => {
+  it('окно не показывается в панели задач', () => {
+    expect(createData({ read: (d) => d, write() {} }).data.settings.taskbar).toBe(false);
+  });
+});

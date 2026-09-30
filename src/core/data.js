@@ -2,7 +2,7 @@ const DEFAULTS = () => ({
   marks: {},
   tracked: {},
   sync: { lastPulledAt: null },
-  settings: { autostartSet: false, viewMode: 'full', lang: 'ru' },
+  settings: { autostartSet: false, viewMode: 'full', lang: 'ru', taskbar: false },
   window: null,
 });
 
