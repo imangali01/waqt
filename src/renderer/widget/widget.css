@@ -79,11 +79,15 @@ button { -webkit-app-region: no-drag; font-family: inherit; }
 .viewbtn { border: 0; background: none; padding: 2px; line-height: 0; color: #b3b9be; cursor: pointer; border-radius: 50%; }
 .viewbtn:hover { color: var(--ink); }
 
-/* Компактный вид 200x100 */
+/* Компактный вид 200x100: сохраняем ~70% элементов (без kicker, имени Аллаха и значка пропущенных) */
 html.compact, html.compact body { height: 100px; }
-html.compact .card { height: 100px; border-radius: 26px; padding: 9px 14px 11px; }
-html.compact .kicker, html.compact .who-sub, html.compact .middle, html.compact .foot { display: none; }
+html.compact .card { height: 100px; border-radius: 26px; padding: 8px 14px 9px; }
+html.compact .kicker, html.compact .middle { display: none; }
+html.compact .who { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
 html.compact .who-name { font-size: 16px; margin-top: 0; }
+html.compact .who-sub { font-size: 11px; margin-top: 0; }
+html.compact .top { align-items: center; }
+html.compact .tools { gap: 4px; }
 html.compact .crescent svg { width: 20px; height: 20px; }
 html.compact .clock { flex: 1; align-items: center; }
 html.compact .timer { font-size: 34px; }
@@ -91,5 +95,11 @@ html.compact .seconds { font-size: 15px; }
 html.compact .mark { width: 30px; height: 30px; bottom: auto; top: 50%; transform: translateY(-50%); }
 html.compact .mark:active { transform: translateY(-50%) scale(.92); }
 html.compact .mark svg { width: 16px; height: 16px; }
-html.compact .bar { margin-top: 4px; }
+html.compact .bar { margin-top: 2px; }
+html.compact .foot { margin-top: 5px; height: 10px; }
+html.compact .streak { font-size: 11px; gap: 3px; }
+html.compact .streak svg { width: 11px; height: 11px; }
+html.compact .dots { gap: 5px; }
+html.compact .dot { width: 7px; height: 7px; }
+html.compact .dot.pending { box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px var(--orange); }
 html.compact .face { border-radius: 26px; }
