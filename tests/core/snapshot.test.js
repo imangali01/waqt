@@ -70,3 +70,10 @@ describe('buildSnapshot pulse (последние 5 минут без отмет
     expect(buildSnapshot({}, {}, at('2026-07-01', '13:00')).pulse).toBe(false);
   });
 });
+
+describe('dots: дата для клика по кружку', () => {
+  it('у каждого кружка есть date окна', () => {
+    const s = buildSnapshot(DAYS, {}, at('2026-07-01', '13:00'));
+    expect(s.dots.map((d) => d.date)).toEqual(Array(5).fill('2026-07-01'));
+  });
+});

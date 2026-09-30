@@ -12,12 +12,24 @@ function renderStreak(n) {
     : tr('streak.off');
 }
 
+let dotsKey = '';
 function renderDots(dots) {
+  // Пересобираем только при изменении: иначе кружок исчезает между нажатием и отпусканием.
+  const key = JSON.stringify([dots.map((d) => [d.date, d.prayer, d.status]), getLang()]);
+  if (key === dotsKey) return;
+  dotsKey = key;
   $('dots').replaceChildren(
     ...dots.map((d) => {
-      const el = document.createElement('span');
+      const el = document.createElement('button');
+      el.type = 'button';
       el.className = `dot ${d.status}`;
       el.title = prayerName(getLang(), d.prayer);
+      el.disabled = d.status === 'upcoming';
+      // Идущий — «прочитал», пропущенный — «прочитал позже», отмеченный — отмена.
+      el.addEventListener('click', async () => {
+        if (d.status === 'pending') await window.waqt.mark();
+        else await window.waqt.toggleCell(d.date, d.prayer);
+      });
       return el;
     }),
   );

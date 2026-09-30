@@ -42,7 +42,10 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
 .streak b { font-weight: 800; font-variant-numeric: tabular-nums; }
 .streak.on { color: var(--orange); }
 .dots { display: flex; gap: 6px; }
-.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gray); transition: background-color .3s ease; }
+.dot { position: relative; width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0; background: var(--gray); transition: background-color .3s ease, transform .1s ease; cursor: pointer; }
+.dot::after { content: ""; position: absolute; inset: -6px; }
+.dot:disabled { cursor: default; }
+.dot:not(:disabled):hover { transform: scale(1.35); }
 .dot.on_time { background: var(--green); }
 .dot.late { background: var(--yellow); }
 .dot.missed { background: var(--red); }
