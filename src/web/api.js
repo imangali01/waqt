@@ -8,10 +8,11 @@ import { dateOf } from '../core/tz.js';
 import { setMark, decideStatus, markLateIfMissed } from '../core/marks.js';
 import { dueReminder } from '../core/reminders.js';
 import { normalizeLang, LANGS } from '../core/i18n.js';
+import { createSync } from '../core/sync.js';
 
-const KEY = { times: 'waqt.times', marks: 'waqt.marks', lang: 'waqt.lang' };
+const KEY = { times: 'waqt.times', marks: 'waqt.marks', data: 'waqt.data', lang: 'waqt.lang' };
 
-export function createWebApi({ storage, names = [], fetchFn, now = () => new Date(), playChime = () => {} }) {
+export function createWebApi({ storage, names = [], fetchFn, client = null, now = () => new Date(), playChime = () => {}, onSync = () => {} }) {
   const read = (k, d) => {
     try { return JSON.parse(storage.getItem(k)) ?? d; } catch { return d; }
   };
@@ -19,13 +20,18 @@ export function createWebApi({ storage, names = [], fetchFn, now = () => new Dat
     try { storage.setItem(k, JSON.stringify(v)); } catch { /* хранилище недоступно (приватный режим) */ }
   };
   let days = read(KEY.times, {});
-  let marks = read(KEY.marks, {});
+  // Локальные данные в том же виде, что в Electron-версии, чтобы работал общий core/sync.js.
+  const data = {
+    marks: {}, tracked: {}, sync: { lastPulledAt: null },
+    ...read(KEY.data, { marks: read(KEY.marks, {}) }),
+  };
+  const saveData = () => write(KEY.data, data);
   let lang = normalizeLang(read(KEY.lang, 'ru'));
   const fired = new Set();
   const langCbs = [];
   let stateCb = () => {};
 
-  const snapshot = () => buildSnapshot(days, marks, now(), names);
+  const snapshot = () => buildSnapshot(days, data.marks, now(), names);
 
   function tick() {
     const snap = snapshot();
@@ -50,6 +56,28 @@ export function createWebApi({ storage, names = [], fetchFn, now = () => new Dat
     }
     if (ok) write(KEY.times, days);
     return ok;
+  }
+
+  let sync = client ? createSync({ client, data, save: saveData }) : null;
+  // Клиент Supabase подключается позже (он грузится из сети и не должен задерживать показ таймера).
+  const attachClient = (c) => { sync = createSync({ client: c, data, save: saveData }); };
+  let syncTimer;
+  async function syncNow() {
+    if (!sync) return { ok: false, reason: 'no-client' };
+    try {
+      const res = await sync.syncOnce();
+      onSync(res);
+      return res;
+    } catch (e) {
+      const res = { ok: false, reason: String(e.message ?? e) };
+      onSync(res);
+      return res;
+    }
+  }
+  function scheduleSync() {
+    if (!sync) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(syncNow, 3000);
   }
 
   const setLang = async (l) => {
@@ -81,22 +109,24 @@ export function createWebApi({ storage, names = [], fetchFn, now = () => new Dat
       const w = windowsForDate(days, s.date).find((x) => x.prayer === s.prayer);
       const status = decideStatus(w, t);
       if (!status) return false;
-      marks = setMark(marks, s.date, s.prayer, status, t.toISOString());
-      write(KEY.marks, marks);
+      data.marks = setMark(data.marks, s.date, s.prayer, status, t.toISOString());
+      saveData();
+      scheduleSync();
       tick();
       return true;
     },
     async markMissed(date, prayer) {
       const t = now();
       const w = windowsForDate(days, date).find((x) => x.prayer === prayer);
-      const next = w && markLateIfMissed(marks, w, t, t.toISOString());
+      const next = w && markLateIfMissed(data.marks, w, t, t.toISOString());
       if (!next) return false;
-      marks = next;
-      write(KEY.marks, marks);
+      data.marks = next;
+      saveData();
+      scheduleSync();
       tick();
       return true;
     },
   };
 
-  return { api, tick, refresh, snapshot };
+  return { api, tick, refresh, snapshot, syncNow, attachClient };
 }

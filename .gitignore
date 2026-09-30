@@ -14,3 +14,4 @@ site/app/icons/
 site/app/names.json
 site/app/chime.wav
 site/assets/
+.vercel

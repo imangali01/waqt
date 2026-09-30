@@ -15,6 +15,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800;900&display=swap">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="login.css">
+  <script>
+    // Уже вошли — лендинг не показываем, сразу приложение.
+    try { if ((localStorage.getItem('waqt.auth') || '').includes('refresh_token')) location.replace('app/'); } catch (e) {}
+  </script>
 </head>
 <body>
   <header class="nav">
@@ -23,6 +28,7 @@
       <a href="#features">Возможности</a>
       <a href="#install">Установка</a>
       <a href="https://github.com/imangali01/waqt">GitHub</a>
+      <button id="login-btn" class="nav-login" type="button">Зайти</button>
     </nav>
   </header>
 
@@ -99,6 +105,6 @@
   <footer class="foot">
     <span>Waqt · <a href="https://github.com/imangali01/waqt/releases">все версии</a></span>
   </footer>
-  <script src="landing.js"></script>
+  <script type="module" src="landing.js"></script>
 </body>
 </html>

@@ -7,3 +7,8 @@ body.web .crescent { cursor: default; }
 body.web .crescent:hover { transform: none; }
 @media (prefers-color-scheme: dark) { html, body.web { background: #0f1512; } }
 body.web .miss-badge { display: none !important; }
+
+.account-btn { position: fixed; top: calc(env(safe-area-inset-top) + 14px); right: 16px; height: 38px; padding: 0 20px; border: 2px solid #2BA36B; border-radius: 19px; background: rgba(255, 255, 255, .85); color: #1f8556; font: 700 15px "Segoe UI", system-ui, sans-serif; cursor: pointer; z-index: 5; }
+.account-btn:hover { background: #2BA36B; color: #fff; }
+.account-btn[hidden] { display: none; }
+@media (prefers-color-scheme: dark) { .account-btn { background: rgba(23, 32, 27, .85); color: #5fd39a; } .account-btn:hover { color: #fff; } }
