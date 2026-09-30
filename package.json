@@ -8,7 +8,9 @@
     "start": "node scripts/start.js",
     "test": "vitest run",
     "assets": "node scripts/make-assets.js",
-    "dist": "electron-builder --win --publish never"
+    "dist": "electron-builder --win --publish never",
+    "autostart:on": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-autostart.ps1",
+    "autostart:off": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/uninstall-autostart.ps1"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
