@@ -1,0 +1,16 @@
+node_modules
+dist
+out
+.superpowers
+.scratch
+docs
+.claude
+tests
+supabase
+build
+scripts/package
+*.png
+!site/**
+.env*
+supabase.config.json
+.supabase
