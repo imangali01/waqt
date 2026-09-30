@@ -2,7 +2,7 @@ const SIZES = {
   full: { width: 200, height: 200 },
   compact: { width: 200, height: 100 },
   medium: { width: 150, height: 150 },
-  narrow: { width: 75, height: 150 },
+  strip: { width: 150, height: 75 },
 };
 export const VIEW_MODES = Object.keys(SIZES);
 
