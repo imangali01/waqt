@@ -306,8 +306,8 @@ function buildTrayMenu() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Показать / Скрыть', click: toggleWidget },
     { label: 'Вид окна', submenu: [
-      { label: 'Обычный 200×200', type: 'radio', checked: viewMode === 'full', click: () => setViewMode('full') },
-      { label: 'Компактный 200×100', type: 'radio', checked: viewMode === 'compact', click: () => setViewMode('compact') },
+      { label: 'Обычный 180×180', type: 'radio', checked: viewMode === 'full', click: () => setViewMode('full') },
+      { label: 'Компактный 180×90', type: 'radio', checked: viewMode === 'compact', click: () => setViewMode('compact') },
       { label: 'Средний 150×150', type: 'radio', checked: viewMode === 'medium', click: () => setViewMode('medium') },
       { label: 'Полоса 150×75', type: 'radio', checked: viewMode === 'strip', click: () => setViewMode('strip') },
     ] },
