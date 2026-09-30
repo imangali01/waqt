@@ -15,6 +15,7 @@ export function buildSnapshot(days, marks, now, names = []) {
   const today = dateOf(now);
   const windows = windowsForDate(days, today);
   const dots = windows.map((w) => ({
+    date: w.date,
     prayer: w.prayer,
     name: PRAYER_NAMES[w.prayer],
     status: statusOfWindow(w, getMark(marks, w.date, w.prayer), now),
