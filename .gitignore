@@ -7,3 +7,10 @@ out/
 .superpowers/
 supabase.config.json
 .supabase
+
+# Генерируется scripts/build-site.js
+site/app/src/
+site/app/icons/
+site/app/names.json
+site/app/chime.wav
+site/assets/

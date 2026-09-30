@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#eef3ef">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Waqt">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Waqt</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="src/renderer/widget/widget.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body class="web">
+  <main class="card" id="widget">
+    <header class="top">
+      <div class="who">
+        <div id="kicker" class="kicker"></div>
+        <div id="label" class="who-name">…</div>
+        <div id="sub" class="who-sub"></div>
+      </div>
+      <div class="tools">
+        <button id="view-btn" class="viewbtn" aria-label="Язык · Тіл · اللغة">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+        <span id="history-btn" class="crescent">
+          <svg viewBox="0 0 24 24" width="26" height="26">
+            <defs><mask id="moon"><rect width="24" height="24" fill="#fff"/><circle cx="14.4" cy="12" r="5.28" fill="#000"/></mask></defs>
+            <circle cx="12" cy="12" r="10.4" fill="#fff" stroke="#2BA36B" stroke-width="1.7"/>
+            <circle cx="11.28" cy="12" r="6.48" fill="#2BA36B" mask="url(#moon)"/>
+          </svg>
+        </span>
+      </div>
+    </header>
+    <div id="middle" class="middle">
+      <button id="name-chip" class="chip" data-i18n-title="name.tip" hidden></button>
+      <button id="missed-btn" class="miss-badge" hidden></button>
+    </div>
+    <div class="clock">
+      <span id="timer" class="timer level-normal">--:--</span><span id="seconds" class="seconds"></span>
+      <button id="mark-btn" class="mark" data-i18n-title="mark.tip" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="bar"><i id="bar" class="level-normal"></i></div>
+    <footer class="foot">
+      <span id="streak" class="streak">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12.5 2.5c.4 3-1.3 4.6-2.8 6.3C8.2 10.5 7 12.2 7 14.5a5 5 0 0 0 10 0c0-2.3-1-3.8-2.2-5.2-.4 1.4-1.1 2.2-2 2.5.6-3.300.4-6.500-.3-9.300z" fill="currentColor"/></svg>
+        <b id="streak-n">0</b>
+        <i id="sync" class="sync" hidden></i>
+      </span>
+      <div id="dots" class="dots"></div>
+    </footer>
+  </main>
+  <section id="name-face" class="face" hidden>
+    <div id="face-ar" class="face-ar"></div>
+    <div id="face-tr" class="face-tr"></div>
+    <div id="face-tl" class="face-tl"></div>
+    <div id="face-desc" class="face-desc"></div>
+  </section>
+  <audio id="chime" src="chime.wav" preload="auto"></audio>
+  <audio id="azan" preload="none"></audio>
+  <script type="module" src="shim.js"></script>
+  <script type="module" src="src/renderer/widget/widget.js"></script>
+</body>
+</html>

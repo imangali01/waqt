@@ -1,7 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import zlib from 'node:zlib';
-import { moonRgba } from './icon.js';
+import { moonPng } from './png.js';
 
 const outDir = path.resolve('assets');
 fs.mkdirSync(outDir, { recursive: true });
@@ -29,41 +28,8 @@ function chimeWav() {
   return Buffer.concat([h, data]);
 }
 
-function crc32(buf) {
-  let c;
-  let crc = 0xffffffff;
-  for (let n = 0; n < buf.length; n++) {
-    c = (crc ^ buf[n]) & 0xff;
-    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    crc = (crc >>> 8) ^ c;
-  }
-  return (crc ^ 0xffffffff) >>> 0;
-}
-function chunk(type, data) {
-  const len = Buffer.alloc(4);
-  len.writeUInt32BE(data.length);
-  const td = Buffer.concat([Buffer.from(type), data]);
-  const crc = Buffer.alloc(4);
-  crc.writeUInt32BE(crc32(td));
-  return Buffer.concat([len, td, crc]);
-}
-function trayPng(size = 32) {
-  const rgba = moonRgba(size);
-  const raw = Buffer.alloc((size * 4 + 1) * size);
-  for (let y = 0; y < size; y++) {
-    raw[y * (size * 4 + 1)] = 0;
-    Buffer.from(rgba.buffer, y * size * 4, size * 4).copy(raw, y * (size * 4 + 1) + 1);
-  }
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(size, 0); ihdr.writeUInt32BE(size, 4); ihdr[8] = 8; ihdr[9] = 6;
-  return Buffer.concat([
-    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
-    chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw)), chunk('IEND', Buffer.alloc(0)),
-  ]);
-}
-
 fs.writeFileSync(path.join(outDir, 'chime.wav'), chimeWav());
-fs.writeFileSync(path.join(outDir, 'tray.png'), trayPng());
+fs.writeFileSync(path.join(outDir, 'tray.png'), moonPng(32));
 fs.mkdirSync('build', { recursive: true });
-fs.writeFileSync(path.join('build', 'icon.png'), trayPng(512));
+fs.writeFileSync(path.join('build', 'icon.png'), moonPng(512));
 console.log('assets generated');
