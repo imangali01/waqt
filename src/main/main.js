@@ -65,7 +65,7 @@ function createWindow() {
   const size = viewSize(viewMode);
   const pos = clampToDisplays(store.data.window, screen.getAllDisplays(), size);
   win = new BrowserWindow({
-    ...size, frame: false, transparent: true, resizable: false,
+    ...size, icon: path.join(__dirname, '../../assets/tray.png'), frame: false, transparent: true, resizable: false,
     alwaysOnTop: true, hasShadow: false, show: true, skipTaskbar: true,
     ...(pos ?? {}),
     webPreferences: {
