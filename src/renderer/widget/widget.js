@@ -113,8 +113,8 @@ window.waqt.onSync((s) => {
 });
 
 let mode = 'full';
-let modes = ['full', 'compact', 'medium', 'narrow'];
-const SIZE_LABEL = { full: '200×200', compact: '200×100', medium: '150×150', narrow: '75×150' };
+let modes = ['full', 'compact', 'medium', 'strip'];
+const SIZE_LABEL = { full: '200×200', compact: '200×100', medium: '150×150', strip: '150×75' };
 window.waqt.onMode((m, all) => {
   mode = m;
   if (all) modes = all;

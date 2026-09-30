@@ -125,28 +125,29 @@ html.medium .dots { gap: 4px; }
 html.medium .dot { width: 7px; height: 7px; }
 html.medium .face { border-radius: 28px; }
 
-/* Узкий вид 75x150: всё в столбик */
-html.narrow, html.narrow body { width: 75px; height: 150px; }
-html.narrow .card { width: 75px; height: 150px; border-radius: 22px; padding: 9px 8px 9px; align-items: center; text-align: center; }
-html.narrow .kicker, html.narrow .middle, html.narrow .who-sub { display: none; }
-html.narrow .top { flex-direction: column-reverse; align-items: center; width: 100%; gap: 2px; }
-html.narrow .who { width: 100%; }
-html.narrow .who-name { font-size: 14px; margin-top: 0; }
-html.narrow .tools { gap: 6px; }
-html.narrow .crescent svg { width: 18px; height: 18px; }
-html.narrow .viewbtn svg { width: 14px; height: 14px; }
-html.narrow .clock { flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 0; width: 100%; }
-html.narrow .timer { font-size: 27px; letter-spacing: -.045em; }
-html.narrow .seconds { font-size: 12px; margin: 0; }
-html.narrow .mark { position: static; width: 24px; height: 24px; margin-top: 3px; }
-html.narrow .mark svg { width: 13px; height: 13px; }
-html.narrow .bar { width: 100%; margin-top: 3px; }
-html.narrow .foot { flex-direction: column; height: auto; gap: 4px; margin-top: 5px; align-items: center; }
-html.narrow .streak { font-size: 10px; gap: 2px; }
-html.narrow .streak svg { width: 10px; height: 10px; }
-html.narrow .dots { gap: 3px; }
-html.narrow .dot { width: 7px; height: 7px; }
-html.narrow .face { border-radius: 22px; padding: 8px 6px; }
-html.narrow .face-ar { font-size: 24px; }
-html.narrow .face-tr { font-size: 12px; }
-html.narrow .face-tl, html.narrow .face-desc { display: none; }
+/* Полоса 150x75 */
+html.strip, html.strip body { width: 150px; height: 75px; }
+html.strip .card { width: 150px; height: 75px; border-radius: 20px; padding: 6px 10px 7px; }
+html.strip .kicker, html.strip .middle, html.strip .who-sub { display: none; }
+html.strip .top { align-items: center; }
+html.strip .who-name { font-size: 13px; margin-top: 0; }
+html.strip .tools { gap: 3px; }
+html.strip .crescent svg { width: 16px; height: 16px; }
+html.strip .viewbtn svg { width: 12px; height: 12px; }
+html.strip .clock { flex: 1; align-items: center; }
+html.strip .timer { font-size: 28px; letter-spacing: -.04em; }
+html.strip .seconds { font-size: 12px; margin-left: 2px; }
+html.strip .mark { width: 24px; height: 24px; bottom: auto; top: 50%; transform: translateY(-50%); border-width: 2px; }
+html.strip .mark:active { transform: translateY(-50%) scale(.92); }
+html.strip .mark svg { width: 13px; height: 13px; }
+html.strip .bar { height: 3px; margin-top: 1px; }
+html.strip .foot { margin-top: 4px; height: 8px; }
+html.strip .streak { font-size: 9px; gap: 2px; }
+html.strip .streak svg { width: 9px; height: 9px; }
+html.strip .dots { gap: 4px; }
+html.strip .dot { width: 6px; height: 6px; }
+html.strip .dot.pending { box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px var(--orange); }
+html.strip .face { border-radius: 20px; padding: 6px 8px; }
+html.strip .face-ar { font-size: 26px; line-height: 1.2; }
+html.strip .face-tr { font-size: 12px; margin-top: 0; }
+html.strip .face-tl, html.strip .face-desc { display: none; }

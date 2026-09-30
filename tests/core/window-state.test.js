@@ -38,12 +38,12 @@ describe('viewSize / normalizeViewMode', () => {
 import { VIEW_MODES } from '../../src/core/window-state.js';
 
 describe('дополнительные размеры', () => {
-  it('средний 150x150, узкий 75x150', () => {
+  it('средний 150x150, полоса 150x75', () => {
     expect(viewSize('medium')).toEqual({ width: 150, height: 150 });
-    expect(viewSize('narrow')).toEqual({ width: 75, height: 150 });
+    expect(viewSize('strip')).toEqual({ width: 150, height: 75 });
   });
   it('порядок режимов для переключения', () => {
-    expect(VIEW_MODES).toEqual(['full', 'compact', 'medium', 'narrow']);
-    expect(normalizeViewMode('narrow')).toBe('narrow');
+    expect(VIEW_MODES).toEqual(['full', 'compact', 'medium', 'strip']);
+    expect(normalizeViewMode('strip')).toBe('strip');
   });
 });

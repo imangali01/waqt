@@ -309,7 +309,7 @@ function buildTrayMenu() {
       { label: 'Обычный 200×200', type: 'radio', checked: viewMode === 'full', click: () => setViewMode('full') },
       { label: 'Компактный 200×100', type: 'radio', checked: viewMode === 'compact', click: () => setViewMode('compact') },
       { label: 'Средний 150×150', type: 'radio', checked: viewMode === 'medium', click: () => setViewMode('medium') },
-      { label: 'Узкий 75×150', type: 'radio', checked: viewMode === 'narrow', click: () => setViewMode('narrow') },
+      { label: 'Полоса 150×75', type: 'radio', checked: viewMode === 'strip', click: () => setViewMode('strip') },
     ] },
     { label: 'История', click: () => { showWidget(); win.webContents.send('open-history-request'); } },
     { label: 'Войти в аккаунт', click: openLogin },
