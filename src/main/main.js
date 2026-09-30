@@ -118,8 +118,9 @@ ipcMain.handle('history:open', async () => {
   historyOpen = true;
   widgetBounds = win.getBounds();
   const area = screen.getDisplayMatching(widgetBounds).workArea;
-  const w = Math.min(960, area.width - 40);
-  const h = Math.min(420, area.height - 40);
+  // Фиксированный размер раскрытого окна (ужимается только если экран меньше).
+  const w = Math.min(1200, area.width);
+  const h = Math.min(500, area.height);
   const target = {
     x: area.x + Math.round((area.width - w) / 2),
     y: area.y + Math.round((area.height - h) / 2),

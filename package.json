@@ -8,7 +8,8 @@
     "start": "node scripts/start.js",
     "test": "vitest run",
     "assets": "node scripts/make-assets.js",
-    "dist": "electron-builder --win --publish never"
+    "dist": "electron-builder --win --publish never",
+    "pack:win": "node scripts/make-package.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
