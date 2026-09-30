@@ -5,3 +5,4 @@ out/
 .env.*
 !.env.example
 .superpowers/
+supabase.config.json

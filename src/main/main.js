@@ -20,6 +20,7 @@ import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
 import { dueAzan } from '../core/azan.js';
+import { supabaseConfig } from '../core/config.js';
 import { needsAutostart } from '../core/autostart.js';
 import { clampToDisplays, viewSize, normalizeViewMode } from '../core/window-state.js';
 
@@ -39,8 +40,10 @@ const authStorage = {
   setItem: (k, v) => authFile.write({ ...authFile.read({}), [k]: v }),
   removeItem: (k) => { const o = authFile.read({}); delete o[k]; authFile.write(o); },
 };
-const client = process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY
-  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+const cfgFile = createJsonFile(path.join(app.getAppPath(), 'supabase.config.json')).read(null);
+const sbCfg = supabaseConfig(process.env, cfgFile);
+const client = sbCfg
+  ? createClient(sbCfg.url, sbCfg.key, {
     auth: { storage: authStorage, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
     realtime: { transport: WebSocket },
   })
