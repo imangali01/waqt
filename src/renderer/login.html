@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
-  <title>Вход в Waqt</title>
+  <title data-i18n="login.title">Waqt</title>
   <link rel="stylesheet" href="login.css">
 </head>
 <body>
-  <h1>Вход в Waqt</h1>
-  <p>Чтобы история намазов сохранялась в облаке.</p>
+  <h1 data-i18n="login.title"></h1>
+  <p data-i18n="login.sub"></p>
   <input id="email" type="email" placeholder="Email" autocomplete="username">
-  <input id="password" type="password" placeholder="Пароль" autocomplete="current-password">
+  <input id="password" type="password" data-i18n-ph="login.password" autocomplete="current-password">
   <div id="err"></div>
-  <button id="go">Войти</button>
+  <button id="go" data-i18n="login.go"></button>
   <script type="module" src="login.js"></script>
 </body>
 </html>
