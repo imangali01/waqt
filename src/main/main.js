@@ -293,6 +293,11 @@ app.whenReady().then(async () => {
   if (!gotLock) return;
   createWindow();
   createTray();
+  if (process.platform === 'darwin') {
+    // На macOS виджет — без иконки в Dock, поверх всех окон и на всех рабочих столах.
+    app.dock?.hide();
+    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  }
   setupAutostart();
   // [startup]
   startRefresh({
@@ -316,6 +321,7 @@ app.on('before-quit', () => { quitting = true; });
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) app.quit();
 app.on('second-instance', () => showWidget());
+app.on('activate', () => showWidget());
 
 function showWidget() {
   if (!win) return;
@@ -328,7 +334,9 @@ function toggleWidget() {
 }
 
 function createTray() {
-  tray = new Tray(nativeImage.createFromPath(path.join(__dirname, '../../assets/tray.png')));
+  let trayImage = nativeImage.createFromPath(path.join(__dirname, '../../assets/tray.png'));
+  if (process.platform === 'darwin') trayImage = trayImage.resize({ height: 18 });
+  tray = new Tray(trayImage);
   tray.setToolTip('Waqt');
   buildTrayMenu();
   tray.on('click', toggleWidget);

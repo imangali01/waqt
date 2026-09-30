@@ -1,6 +1,6 @@
 {
   "name": "waqt",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": true,
   "type": "module",
   "main": "src/main/main.js",
@@ -9,7 +9,8 @@
     "test": "vitest run",
     "assets": "node scripts/make-assets.js",
     "dist": "electron-builder --win --publish never",
-    "pack:win": "node scripts/make-package.js"
+    "pack:win": "node scripts/make-package.js",
+    "dist:mac": "electron-builder --mac --publish never"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
@@ -53,6 +54,24 @@
       "deleteAppDataOnUninstall": false,
       "shortcutName": "Waqt",
       "artifactName": "Waqt-Setup-${version}.exe"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "category": "public.app-category.lifestyle",
+      "icon": "build/icon.png"
     }
   }
 }
