@@ -79,7 +79,7 @@ export function createWebApi({ storage, names = [], fetchFn, client = null, now 
   function scheduleSync() {
     if (!sync) return;
     clearTimeout(syncTimer);
-    syncTimer = setTimeout(syncNow, 3000);
+    syncTimer = setTimeout(syncNow, 500);
   }
 
   const setLang = async (l) => {

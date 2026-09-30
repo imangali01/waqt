@@ -2,6 +2,7 @@ import { createWebApi } from './src/web/api.js';
 import { t, LANGS, prayerName, daysLabel, normalizeLang } from './src/core/i18n.js';
 import { nameOfDay } from './src/core/names.js';
 import { addDays, dateOf } from './src/core/tz.js';
+import { subscribeMarks } from './src/core/realtime.js';
 
 const $ = (id) => document.getElementById(id);
 const AUTH_KEY = 'waqt.auth';
@@ -26,6 +27,7 @@ const { api, tick, refresh, syncNow, attachClient } = createWebApi({
   playChime: () => { chime.currentTime = 0; chime.play().catch(() => {}); },
 });
 
+const HIST_DAYS = 40;
 let lang = 'ru';
 let snap = null;
 let rowsKey = '';
@@ -129,9 +131,19 @@ async function renderRows() {
     li.querySelector('.r-time').textContent = item.start;
     const st = li.querySelector('.st');
     st.innerHTML = statusIcon(item.status);
-    if (item.status === 'missed') {
-      st.title = t(lang, 'app.markLate');
-      st.addEventListener('click', async () => { await api.markMissed(dateOf(new Date()), item.prayer); refreshAll(); });
+    // Кружок кликабелен: идущий — «прочитал», пропущенный — «прочитал позже», отмеченный — отмена.
+    if (item.status !== 'upcoming') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'st-btn';
+      b.innerHTML = st.innerHTML;
+      b.title = t(lang, item.status === 'pending' ? 'app.mark' : item.status === 'missed' ? 'app.markLate' : 'app.undo');
+      b.addEventListener('click', async () => {
+        if (item.status === 'pending') await api.mark();
+        else await api.toggleCell(dateOf(new Date()), item.prayer);
+        refreshAll();
+      });
+      st.replaceChildren(b);
     }
     return li;
   }));
@@ -140,7 +152,7 @@ async function renderRows() {
 
 async function renderHistory() {
   const today = dateOf(new Date());
-  const cols = await api.getHistory(addDays(today, -13), 14);
+  const cols = await api.getHistory(addDays(today, -(HIST_DAYS - 1)), HIST_DAYS);
   const key = JSON.stringify([cols, lang]);
   if (key === histKey) return;
   histKey = key;
@@ -173,6 +185,9 @@ async function renderHistory() {
     rows.push(row);
   }
   $('hist').replaceChildren(...rows);
+  // Свежие дни справа: прокручиваем к концу.
+  const sc = document.querySelector('.hist-scroll');
+  requestAnimationFrame(() => { sc.scrollLeft = sc.scrollWidth; });
 }
 
 function refreshAll() {
@@ -226,8 +241,12 @@ if (!embed) {
         try { localStorage.removeItem(AUTH_KEY); } catch { /* ignore */ }
         location.replace('../');
       });
-      if (user) syncNow().then(tick);
-      setInterval(() => { syncNow().then(tick); }, 5 * 60e3);
+      if (user) {
+        syncNow().then(tick);
+        // Отметки с других устройств (десктоп) приходят сразу.
+        subscribeMarks({ client, userId: user.id, onChange: () => syncNow().then(tick) });
+      }
+      setInterval(() => { syncNow().then(tick); }, 60e3); // страховка, если Realtime не дошёл
     }
   } catch { /* нет сети до CDN — работаем локально */ }
 }
