@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Waqt — время до конца намаза</title>
+  <meta name="description" content="Виджет для компьютера и телефона: сколько осталось до конца текущего намаза. Напоминания, азан, отметки, история и серия.">
+  <meta name="theme-color" content="#eef3ef">
+  <link rel="icon" href="assets/logo-64.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800;900&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#top"><img src="assets/logo-64.png" alt="" width="28" height="28"> Waqt</a>
+    <nav>
+      <a href="#features">Возможности</a>
+      <a href="#install">Установка</a>
+      <a href="https://github.com/imangali01/waqt">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Сколько осталось до&nbsp;конца намаза — всегда перед глазами</h1>
+        <p class="lead">Маленькое окно поверх всех окон. Чёрные цифры, пока времени много; красные за 30 минут; бордовые за 15. Вовремя напомнит и отметит прочитанное.</p>
+        <div class="cta">
+          <a class="btn primary" id="dl-win" href="https://github.com/imangali01/waqt/releases/latest/download/Waqt-Setup.exe">
+            <span>Скачать для Windows</span><small>установщик .exe</small>
+          </a>
+          <a class="btn primary" id="dl-mac" href="https://github.com/imangali01/waqt/releases/latest/download/Waqt-mac.dmg">
+            <span>Скачать для macOS</span><small>образ .dmg</small>
+          </a>
+          <a class="btn ghost" href="app/">
+            <span>Открыть на iPhone</span><small>веб-версия, без установки</small>
+          </a>
+        </div>
+        <p class="fine">Бесплатно, без рекламы. Время намаза — Muftyat.kz, город — Астана.</p>
+      </div>
+      <div class="hero-demo">
+        <div class="glow"></div>
+        <iframe src="app/" title="Живой виджет Waqt" loading="lazy"></iframe>
+        <p class="caption">Это работающий виджет, а не картинка</p>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <h2>Всё, что нужно, и ничего лишнего</h2>
+      <ul>
+        <li><b>Таймер до конца окна</b><span>Цифры чернеют, краснеют и становятся бордовыми по мере приближения конца намаза. В последние 5 минут мигают, пока вы не отметите намаз.</span></li>
+        <li><b>Напоминания звуком</b><span>За 20, 15, 10 и 5 минут до конца. Прочитали и отметили — звука не будет.</span></li>
+        <li><b>Азан в начале намаза</b><span>Короткий фрагмент, чтобы не пропустить начало.</span></li>
+        <li><b>История и серия</b><span>Зелёный — вовремя, жёлтый — позже, красный — пропущен. Серия считает дни подряд, когда все пять намазов прочитаны вовремя.</span></li>
+        <li><b>99 имён Аллаха</b><span>В промежутке между намазами — имя дня с арабским написанием и переводом.</span></li>
+        <li><b>Русский, қазақша, العربية</b><span>Язык переключается в настройках. Размеры окна тоже: от 170×170 до 150×75.</span></li>
+        <li><b>Синхронизация</b><span>Отметки хранятся на вашем устройстве и, если войти в аккаунт, синхронизируются между компьютерами.</span></li>
+      </ul>
+    </section>
+
+    <section id="install" class="install">
+      <h2>Установка</h2>
+      <div class="cols">
+        <article>
+          <h3>Windows</h3>
+          <ol>
+            <li>Скачайте <a href="https://github.com/imangali01/waqt/releases/latest/download/Waqt-Setup.exe">Waqt-Setup.exe</a> и запустите.</li>
+            <li>Если Windows пишет «Приложение заблокировано» (Smart App Control), возьмите на <a href="https://github.com/imangali01/waqt/releases/latest">странице релиза</a> архив с Install.cmd.</li>
+            <li>Автозапуск включится сам.</li>
+          </ol>
+        </article>
+        <article>
+          <h3>macOS</h3>
+          <ol>
+            <li>Скачайте <a href="https://github.com/imangali01/waqt/releases/latest/download/Waqt-mac.dmg">Waqt-mac.dmg</a>, перетащите Waqt в «Программы».</li>
+            <li>Первый запуск: правый клик → «Открыть» (приложение пока без подписи Apple).</li>
+            <li>Значок появится в строке меню.</li>
+          </ol>
+        </article>
+        <article>
+          <h3>iPhone</h3>
+          <ol>
+            <li>Откройте <a href="app/">эту страницу</a> в Safari.</li>
+            <li>Нажмите «Поделиться» → «На экран „Домой“».</li>
+            <li>Иконка Waqt откроет таймер на весь экран.</li>
+          </ol>
+          <p class="note">Это веб-приложение: оно не превращается в виджет рабочего стола iOS и не играет звук в фоне. Оно показывает таймер и хранит отметки на телефоне.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Waqt · <a href="https://github.com/imangali01/waqt/releases">все версии</a></span>
+  </footer>
+  <script src="landing.js"></script>
+</body>
+</html>

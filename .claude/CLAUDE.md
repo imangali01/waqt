@@ -15,6 +15,7 @@
 - Красный статус не хранится, а вычисляется. Красный можно превратить только в жёлтый.
 - Установщик `Waqt-Setup-*.exe` без цифровой подписи блокирует Windows 11 Smart App Control. Для раздачи используется пакет `npm run pack:win` → `dist/Waqt-<версия>-win.zip` (папка приложения + `Install.cmd`/`Uninstall.cmd`, скрипты cmd только с CRLF, см. `.gitattributes`). Настоящее решение — подпись сертификатом.
 - macOS: собирается только на macOS (`npm run dist:mac`, universal dmg+zip), локально с Windows нельзя; сборку делает GitHub Actions (`.github/workflows/build.yml`, вручную или по тегу `v*`, секреты `SUPABASE_URL` и `SUPABASE_PUBLISHABLE_KEY`). Без подписи Apple первый запуск: правый клик → «Открыть» (или `xattr -cr Waqt.app`). Виджет для iPhone: `scripts/scriptable/Waqt.js` (приложение Scriptable), позднее нативный SwiftUI+WidgetKit.
+- Сайт: `site/` (лендинг + веб-версия виджета `site/app/` для «На экран Домой» в Safari). Общий код копирует `npm run site:build` (сгенерированное в .gitignore), публикация — `.github/workflows/pages.yml` (в Settings → Pages включить Source: GitHub Actions). Имена файлов релиза фиксированные (`Waqt-Setup.exe`, `Waqt-mac.dmg`), чтобы ссылки `releases/latest/download/...` на лендинге работали.
 - Приложение допускает один экземпляр на пользователя: если уже запущена другая сборка, новый запуск сразу закрывается.
 
 ## Флоу
