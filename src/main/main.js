@@ -20,7 +20,7 @@ import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
 import { dueAzan } from '../core/azan.js';
-import { clampToDisplays } from '../core/window-state.js';
+import { clampToDisplays, viewSize, normalizeViewMode } from '../core/window-state.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
@@ -59,11 +59,13 @@ let tray;
 let quitting = false;
 let historyOpen = false;
 let widgetBounds = null;
+let viewMode = normalizeViewMode(store.data.settings.viewMode);
 
 function createWindow() {
-  const pos = clampToDisplays(store.data.window, screen.getAllDisplays());
+  const size = viewSize(viewMode);
+  const pos = clampToDisplays(store.data.window, screen.getAllDisplays(), size);
   win = new BrowserWindow({
-    width: 200, height: 200, frame: false, transparent: true, resizable: false,
+    ...size, frame: false, transparent: true, resizable: false,
     alwaysOnTop: true, hasShadow: false, show: true, skipTaskbar: true,
     ...(pos ?? {}),
     webPreferences: {
@@ -87,7 +89,40 @@ function createWindow() {
     if (!quitting) { e.preventDefault(); win.hide(); }
   });
   win.loadFile(path.join(__dirname, '../renderer/index.html'));
+  win.webContents.on('did-finish-load', () => win.webContents.send('mode', viewMode));
 }
+
+let switching = false;
+async function setViewMode(mode) {
+  mode = normalizeViewMode(mode);
+  if (mode === viewMode || historyOpen || switching) return false;
+  switching = true;
+  const from = win.getBounds();
+  const size = viewSize(mode);
+  // Не даём окну вылезти за рабочую область при росте.
+  const a = screen.getDisplayMatching(from).workArea;
+  const to = {
+    x: Math.min(Math.max(from.x, a.x), a.x + a.width - size.width),
+    y: Math.min(Math.max(from.y, a.y), a.y + a.height - size.height),
+    ...size,
+  };
+  viewMode = mode;
+  store.data.settings.viewMode = mode;
+  store.save();
+  // Растём — сначала раскладка, потом окно; сжимаемся — сначала окно, потом раскладка.
+  if (size.height > from.height) win.webContents.send('mode', mode);
+  win.setResizable(true);
+  await animateBounds(win, from, to);
+  win.setResizable(false);
+  if (size.height <= from.height) win.webContents.send('mode', mode);
+  store.data.window = { x: to.x, y: to.y };
+  store.save();
+  buildTrayMenu();
+  switching = false;
+  return true;
+}
+
+ipcMain.handle('view:set', (_e, mode) => setViewMode(mode));
 
 ipcMain.handle('mark:current', () => {
   const now = nowDate();
@@ -259,13 +294,21 @@ function toggleWidget() {
 function createTray() {
   tray = new Tray(nativeImage.createFromPath(path.join(__dirname, '../../assets/tray.png')));
   tray.setToolTip('Waqt');
+  buildTrayMenu();
+  tray.on('click', toggleWidget);
+}
+
+function buildTrayMenu() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Показать / Скрыть', click: toggleWidget },
+    { label: 'Вид окна', submenu: [
+      { label: 'Обычный 200×200', type: 'radio', checked: viewMode === 'full', click: () => setViewMode('full') },
+      { label: 'Компактный 200×100', type: 'radio', checked: viewMode === 'compact', click: () => setViewMode('compact') },
+    ] },
     { label: 'История', click: () => { showWidget(); win.webContents.send('open-history-request'); } },
     { label: 'Войти в аккаунт', click: openLogin },
     { label: 'Выйти', click: () => { quitting = true; app.quit(); } },
   ]));
-  tray.on('click', toggleWidget);
 }
 
 function setupAutostart() {

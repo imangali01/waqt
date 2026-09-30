@@ -14,3 +14,10 @@ describe('createData', () => {
     expect(saved.marks).toEqual({});
   });
 });
+
+import { createData as _cd } from '../../src/core/data.js';
+describe('viewMode по умолчанию', () => {
+  it('полный вид', () => {
+    expect(_cd({ read: (d) => d, write() {} }).data.settings.viewMode).toBe('full');
+  });
+});
