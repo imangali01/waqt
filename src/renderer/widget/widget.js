@@ -78,7 +78,7 @@ $('missed-btn').addEventListener('click', async () => {
 });
 
 // Азан: только первые AZAN_MS миллисекунд, последние FADE_MS плавно затихает.
-const AZAN_MS = 5000;
+const AZAN_MS = 3500;
 const FADE_MS = 700;
 let azanTimer;
 
