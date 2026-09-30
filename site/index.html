@@ -7,6 +7,10 @@
   <meta name="description" content="Виджет для компьютера и телефона: сколько осталось до конца текущего намаза. Напоминания, азан, отметки, история и серия.">
   <meta name="theme-color" content="#eef3ef">
   <link rel="icon" href="assets/logo-64.png">
+  <link rel="manifest" href="app/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="app/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Waqt">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800;900&display=swap">
@@ -34,8 +38,8 @@
           <a class="btn primary" id="dl-mac" href="https://github.com/imangali01/waqt/releases/latest/download/Waqt-mac.dmg">
             <span>Скачать для macOS</span><small>образ .dmg</small>
           </a>
-          <a class="btn ghost" href="app/">
-            <span>Открыть на iPhone</span><small>веб-версия, без установки</small>
+          <a class="btn ghost" href="#iphone">
+            <span>Добавить на iPhone</span><small>с этой страницы, без установки</small>
           </a>
         </div>
         <p class="fine">Бесплатно, без рекламы. Время намаза — Muftyat.kz, город — Астана.</p>
@@ -79,12 +83,12 @@
             <li>Значок появится в строке меню.</li>
           </ol>
         </article>
-        <article>
+        <article id="iphone">
           <h3>iPhone</h3>
           <ol>
-            <li>Откройте <a href="app/">эту страницу</a> в Safari.</li>
+            <li>Откройте эту страницу в Safari.</li>
             <li>Нажмите «Поделиться» → «На экран „Домой“».</li>
-            <li>Иконка Waqt откроет таймер на весь экран.</li>
+            <li>Иконка Waqt откроет таймер на весь экран, а не лендинг.</li>
           </ol>
           <p class="note">Это веб-приложение: оно не превращается в виджет рабочего стола iOS и не играет звук в фоне. Оно показывает таймер и хранит отметки на телефоне.</p>
         </article>

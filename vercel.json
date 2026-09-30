@@ -1,0 +1,7 @@
+{
+  "buildCommand": "node scripts/build-site.js",
+  "installCommand": "echo skip",
+  "outputDirectory": "site",
+  "framework": null,
+  "cleanUrls": true
+}
