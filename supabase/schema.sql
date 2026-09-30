@@ -49,3 +49,14 @@ create policy "own days" on public.prayer_days
 drop policy if exists "own marks" on public.prayer_marks;
 create policy "own marks" on public.prayer_marks
   for all using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+
+-- Живая синхронизация между устройствами (Supabase Realtime).
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'prayer_marks'
+  ) then
+    alter publication supabase_realtime add table public.prayer_marks;
+  end if;
+end $$;

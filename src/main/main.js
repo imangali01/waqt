@@ -14,6 +14,7 @@ import { createClient } from '@supabase/supabase-js';
 import WebSocket from 'ws';
 import { parseEnv } from 'node:util';
 import { createSync } from '../core/sync.js';
+import { subscribeMarks } from '../core/realtime.js';
 import { hasStoredSession } from '../core/auth-state.js';
 import { animateBounds } from './animate.js';
 import { windowsForDate } from '../core/windows.js';
@@ -243,7 +244,22 @@ async function runSync() {
 
 function scheduleSync() {
   clearTimeout(syncTimer);
-  syncTimer = setTimeout(runSync, 3000);
+  syncTimer = setTimeout(runSync, 500);
+}
+
+// Изменения с другого устройства (сайт, второй компьютер) приходят сразу через Supabase Realtime.
+let stopRealtime = null;
+async function ensureRealtime() {
+  if (!client || stopRealtime) return;
+  const { data } = await client.auth.getSession();
+  const user = data?.session?.user;
+  if (!user) return;
+  stopRealtime = subscribeMarks({ client, userId: user.id, onChange: runSync });
+}
+if (client) {
+  client.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') { stopRealtime?.(); stopRealtime = null; } else ensureRealtime();
+  });
 }
 
 function openLogin() {
@@ -266,6 +282,7 @@ ipcMain.handle('auth:login', async (_e, email, password) => {
     return { ok: false, error: /invalid login/i.test(error.message) ? t(lang, 'login.badcreds') : error.message };
   }
   runSync();
+  ensureRealtime();
   return { ok: true };
 });
 
@@ -312,7 +329,8 @@ app.whenReady().then(async () => {
   if (client) {
     if (!hasStoredSession(authFile.read({}))) openLogin();
     runSync();
-    setInterval(runSync, 5 * 60e3);
+    ensureRealtime();
+    setInterval(runSync, 60e3); // страховка, если Realtime не дошёл
   }
 });
 
