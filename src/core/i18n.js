@@ -23,6 +23,10 @@ const ru = {
   'login.badcreds': 'Неверный email или пароль', 'login.noconfig': 'Supabase не настроен (.env)',
   'tray.toggle': 'Показать / Скрыть', 'tray.settings': 'Настройки', 'tray.history': 'История',
   'tray.login': 'Войти в аккаунт', 'tray.quit': 'Выйти', 'win.settings': 'Настройки Waqt',
+  'app.today': 'Сегодня', 'app.history': 'Последние 14 дней', 'app.mark': 'Я прочитал', 'app.marked': 'Прочитано', 'app.markLate': 'Отметить',
+  'app.name': 'Имя Аллаха дня', 'app.login': 'Зайти', 'app.logout': 'Выйти', 'st.upcoming': 'впереди', 'st.pending': 'идёт',
+  'app.streakTitle': 'Серия', 'app.about': 'О приложении Waqt', 'app.daycount': '{n} из 5 вовремя', 'app.city': 'Астана',
+  'st.sunrise': 'Восход',
 };
 
 const kk = {
@@ -45,6 +49,10 @@ const kk = {
   'login.badcreds': 'Email немесе құпиясөз қате', 'login.noconfig': 'Supabase бапталмаған (.env)',
   'tray.toggle': 'Көрсету / Жасыру', 'tray.settings': 'Баптаулар', 'tray.history': 'Тарих',
   'tray.login': 'Аккаунтқа кіру', 'tray.quit': 'Шығу', 'win.settings': 'Waqt баптаулары',
+  'app.today': 'Бүгін', 'app.history': 'Соңғы 14 күн', 'app.mark': 'Оқыдым', 'app.marked': 'Оқылды', 'app.markLate': 'Белгілеу',
+  'app.name': 'Күннің Алла есімі', 'app.login': 'Кіру', 'app.logout': 'Шығу', 'st.upcoming': 'алда', 'st.pending': 'жүріп жатыр',
+  'app.streakTitle': 'Серия', 'app.about': 'Waqt туралы', 'app.daycount': '5-тен {n} уақытында', 'app.city': 'Астана',
+  'st.sunrise': 'Күн',
 };
 
 const ar = {
@@ -67,6 +75,10 @@ const ar = {
   'login.badcreds': 'البريد أو كلمة المرور غير صحيحة', 'login.noconfig': 'Supabase غير مهيأ (.env)',
   'tray.toggle': 'إظهار / إخفاء', 'tray.settings': 'الإعدادات', 'tray.history': 'السجل',
   'tray.login': 'تسجيل الدخول', 'tray.quit': 'خروج', 'win.settings': 'إعدادات Waqt',
+  'app.today': 'اليوم', 'app.history': 'آخر 14 يومًا', 'app.mark': 'صلّيت', 'app.marked': 'تمّت', 'app.markLate': 'تحديد',
+  'app.name': 'اسم الله لهذا اليوم', 'app.login': 'دخول', 'app.logout': 'خروج', 'st.upcoming': 'قادم', 'st.pending': 'جارية',
+  'app.streakTitle': 'السلسلة', 'app.about': 'عن تطبيق Waqt', 'app.daycount': '{n} من 5 في وقتها', 'app.city': 'أستانا',
+  'st.sunrise': 'الشروق',
 };
 
 export const DICT = { ru, kk, ar };

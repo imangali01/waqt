@@ -18,10 +18,6 @@ for (const f of fs.readdirSync(path.join(root, 'src/core'))) {
   copy(path.join(root, 'src/core', f), path.join(app, 'src/core', f));
 }
 copy(path.join(root, 'src/web/api.js'), path.join(app, 'src/web/api.js'));
-copy(path.join(root, 'src/renderer/i18n-dom.js'), path.join(app, 'src/renderer/i18n-dom.js'));
-for (const f of ['widget.js', 'widget.css']) {
-  copy(path.join(root, 'src/renderer/widget', f), path.join(app, 'src/renderer/widget', f));
-}
 copy(path.join(root, 'assets/names.json'), path.join(app, 'names.json'));
 copy(path.join(root, 'assets/chime.wav'), path.join(app, 'chime.wav'));
 

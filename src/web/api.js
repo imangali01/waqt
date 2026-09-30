@@ -5,7 +5,8 @@ import { buildSnapshot } from '../core/snapshot.js';
 import { computeState } from '../core/state.js';
 import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
-import { setMark, decideStatus, markLateIfMissed } from '../core/marks.js';
+import { buildHistory } from '../core/history.js';
+import { setMark, clearMark, decideStatus, markLateIfMissed, historyAction, trackDay, getMark, statusOfWindow } from '../core/marks.js';
 import { dueReminder } from '../core/reminders.js';
 import { normalizeLang, LANGS } from '../core/i18n.js';
 import { createSync } from '../core/sync.js';
@@ -34,6 +35,7 @@ export function createWebApi({ storage, names = [], fetchFn, client = null, now 
   const snapshot = () => buildSnapshot(days, data.marks, now(), names);
 
   function tick() {
+    if (trackDay(data.tracked, days, dateOf(now()))) { saveData(); scheduleSync(); }
     const snap = snapshot();
     stateCb(snap);
     const due = dueReminder({ snap, fired });
@@ -102,6 +104,32 @@ export function createWebApi({ storage, names = [], fetchFn, client = null, now 
     // В вебе кнопка настроек переключает язык по кругу.
     openSettings: async () => setLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]),
     openHistory: async () => {},
+    async getDay(date = dateOf(now())) {
+      const t = now();
+      const hm = (d) => new Date(d.getTime() + 5 * 3600e3).toISOString().slice(11, 16);
+      return windowsForDate(days, date).map((w) => ({
+        prayer: w.prayer, start: hm(w.start), end: hm(w.end),
+        status: statusOfWindow(w, getMark(data.marks, w.date, w.prayer), t),
+      }));
+    },
+    async getTimes(date = dateOf(now())) {
+      return days[date] ?? null;
+    },
+    async getHistory(startDate, count) {
+      return buildHistory({ days, tracked: data.tracked, marks: data.marks, now: now(), startDate, count });
+    },
+    async toggleCell(date, prayer) {
+      const t = now();
+      const cell = buildHistory({ days, tracked: data.tracked, marks: data.marks, now: t, startDate: date, count: 1 })[0].cells.find((c) => c.prayer === prayer);
+      const action = historyAction(cell?.status);
+      if (action === 'late') data.marks = setMark(data.marks, date, prayer, 'late', t.toISOString());
+      else if (action === 'clear') data.marks = clearMark(data.marks, date, prayer, t.toISOString());
+      else return false;
+      saveData();
+      scheduleSync();
+      tick();
+      return true;
+    },
     async mark() {
       const t = now();
       const s = computeState(days, t);

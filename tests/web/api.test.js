@@ -122,3 +122,38 @@ describe('веб-версия: аккаунт и синхронизация', ()
     expect(await make().syncNow()).toEqual({ ok: false, reason: 'no-client' });
   });
 });
+
+describe('веб-версия: данные для экрана приложения', () => {
+  it('getDay: пять намазов со временем и статусом', async () => {
+    const w = make();
+    const day = await w.api.getDay();
+    expect(day.map((d) => d.prayer)).toEqual(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha']);
+    expect(day[0]).toMatchObject({ start: '03:00', end: '05:10', status: 'missed' });
+    expect(day[1]).toMatchObject({ start: '12:30', end: '17:40', status: 'pending' });
+    expect(day[2].status).toBe('upcoming');
+  });
+
+  it('getHistory и toggleCell: пропущенный → «позже», «позже» → отмена', async () => {
+    const w = make();
+    w.tick(); // фиксирует сегодняшний день в истории
+    const cell = async () => (await w.api.getHistory('2026-07-01', 1))[0].cells.find((c) => c.prayer === 'fajr').status;
+    expect(await cell()).toBe('missed');
+    expect(await w.api.toggleCell('2026-07-01', 'fajr')).toBe(true);
+    expect(await cell()).toBe('late');
+    expect(await w.api.toggleCell('2026-07-01', 'fajr')).toBe(true);
+    expect(await cell()).toBe('missed');
+  });
+
+  it('toggleCell по будущему намазу — false', async () => {
+    const w = make();
+    w.tick();
+    expect(await w.api.toggleCell('2026-07-01', 'isha')).toBe(false);
+  });
+});
+
+describe('веб-версия: восход', () => {
+  it('getTimes: время восхода сегодня', async () => {
+    const w = make();
+    expect((await w.api.getTimes()).sunrise).toBe('05:10');
+  });
+});
