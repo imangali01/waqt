@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
+import { moonRgba } from './icon.js';
 
 const outDir = path.resolve('assets');
 fs.mkdirSync(outDir, { recursive: true });
@@ -47,16 +48,11 @@ function chunk(type, data) {
   return Buffer.concat([len, td, crc]);
 }
 function trayPng(size = 32) {
+  const rgba = moonRgba(size);
   const raw = Buffer.alloc((size * 4 + 1) * size);
   for (let y = 0; y < size; y++) {
     raw[y * (size * 4 + 1)] = 0;
-    for (let x = 0; x < size; x++) {
-      const dx = x + 0.5 - size / 2;
-      const dy = y + 0.5 - size / 2;
-      const inside = dx * dx + dy * dy <= (size / 2 - 1) ** 2;
-      const o = y * (size * 4 + 1) + 1 + x * 4;
-      raw[o] = 0x2b; raw[o + 1] = 0xa3; raw[o + 2] = 0x6b; raw[o + 3] = inside ? 255 : 0;
-    }
+    Buffer.from(rgba.buffer, y * size * 4, size * 4).copy(raw, y * (size * 4 + 1) + 1);
   }
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(size, 0); ihdr.writeUInt32BE(size, 4); ihdr[8] = 8; ihdr[9] = 6;
