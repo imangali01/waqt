@@ -1,3 +1,7 @@
+import { openLogin } from './login-dialog.js';
+
+document.getElementById('login-btn').addEventListener('click', () => openLogin(() => location.replace('app/')));
+
 // Подсвечиваем кнопку для системы посетителя.
 const ua = navigator.userAgent;
 const primary = /Mac/.test(ua) && !/iPhone|iPad/.test(ua) ? 'dl-mac' : /Windows/.test(ua) ? 'dl-win' : null;

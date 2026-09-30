@@ -26,7 +26,7 @@ describe('веб-версия: api для виджета', () => {
     const w = make();
     expect(await w.api.mark()).toBe(true);
     expect(w.snapshot().marked).toBe(true);
-    expect(JSON.parse(w.storage.dump()['waqt.marks'])['2026-07-01|dhuhr'].status).toBe('on_time');
+    expect(JSON.parse(w.storage.dump()['waqt.data']).marks['2026-07-01|dhuhr'].status).toBe('on_time');
   });
 
   it('mark вне окна намаза (пауза) — false', async () => {
@@ -71,5 +71,54 @@ describe('веб-версия: api для виджета', () => {
     const off = createWebApi({ storage, names: [], now: () => at('2026-07-01', '13:00'), fetchFn: async () => { throw new Error('offline'); } });
     expect(await off.refresh()).toBe(false);
     expect(off.snapshot().phase).toBe('prayer');
+  });
+});
+
+function fakeClient({ rows = [], session = { user: { id: 'u1' } } } = {}) {
+  const upserts = [];
+  const q = (data) => {
+    const o = {};
+    for (const m of ['select', 'gt', 'order']) o[m] = () => o;
+    o.range = async () => ({ data, error: null });
+    o.upsert = async (r) => { upserts.push(r); return { error: null }; };
+    return o;
+  };
+  return {
+    upserts,
+    auth: { getSession: async () => ({ data: { session } }) },
+    from: (table) => (table === 'prayer_marks'
+      ? { ...q(rows), select: () => q(rows), upsert: async (r) => { upserts.push(r); return { error: null }; } }
+      : { ...q([]), select: () => q([]), upsert: async () => ({ error: null }) }),
+  };
+}
+
+describe('веб-версия: аккаунт и синхронизация', () => {
+  it('старые отметки из waqt.marks переезжают в waqt.data', () => {
+    const old = { '2026-07-01|dhuhr': { status: 'on_time', markedAt: 'a', updatedAt: 'a', deleted: false, dirty: false } };
+    const storage = memory({ 'waqt.times': JSON.stringify(DAYS), 'waqt.marks': JSON.stringify(old) });
+    const w = createWebApi({ storage, names: [], now: () => at('2026-07-01', '13:00') });
+    expect(w.snapshot().marked).toBe(true);
+  });
+
+  it('syncNow выгружает свои отметки и применяет чужие', async () => {
+    const client = fakeClient({ rows: [{ date: '2026-07-01', prayer: 'fajr', status: 'on_time', marked_at: 'x', updated_at: '2026-07-01T01:00:00Z', deleted: false, synced_at: '2026-07-01T01:00:01Z' }] });
+    const storage = memory({ 'waqt.times': JSON.stringify(DAYS) });
+    const w = createWebApi({ storage, names: [], client, now: () => at('2026-07-01', '13:00') });
+    await w.api.mark();
+    const res = await w.syncNow();
+    expect(res.ok).toBe(true);
+    expect(client.upserts[0][0]).toMatchObject({ user_id: 'u1', date: '2026-07-01', prayer: 'dhuhr', status: 'on_time' });
+    expect(w.snapshot().dots.find((d) => d.prayer === 'fajr').status).toBe('on_time');
+  });
+
+  it('клиент можно подключить позже', async () => {
+    const w = make();
+    expect((await w.syncNow()).reason).toBe('no-client');
+    w.attachClient(fakeClient());
+    expect((await w.syncNow()).ok).toBe(true);
+  });
+
+  it('без клиента syncNow ничего не делает', async () => {
+    expect(await make().syncNow()).toEqual({ ok: false, reason: 'no-client' });
   });
 });
