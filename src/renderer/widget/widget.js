@@ -112,17 +112,10 @@ window.waqt.onSync((s) => {
   $('sync').title = s.ok ? '' : `Не синхронизировано: ${s.reason}`;
 });
 
-let mode = 'full';
-let modes = ['full', 'compact', 'medium', 'strip'];
-const SIZE_LABEL = { full: '180×180', compact: '180×90', medium: '150×150', strip: '150×75' };
-window.waqt.onMode((m, all) => {
-  mode = m;
-  if (all) modes = all;
+window.waqt.onMode((m) => {
   const cl = document.documentElement.classList;
-  // Средний = обычная раскладка, полоса = компактная; оба уменьшены через zoom (см. widget.css).
+  // Средний = обычная раскладка, полоса = компактная; уменьшены через zoom (см. widget.css).
   const on = { full: ['scaled'], compact: ['compact', 'scaled'], medium: ['medium'], strip: ['compact', 'strip'] }[m] ?? [];
   for (const x of ['compact', 'medium', 'strip', 'scaled']) cl.toggle(x, on.includes(x));
-  const next = modes[(modes.indexOf(m) + 1) % modes.length];
-  $('view-btn').title = `Размер окна: ${SIZE_LABEL[m]} (далее ${SIZE_LABEL[next]})`;
 });
-$('view-btn').addEventListener('click', () => window.waqt.setView(modes[(modes.indexOf(mode) + 1) % modes.length]));
+$('view-btn').addEventListener('click', () => window.waqt.openSettings());

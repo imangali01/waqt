@@ -1,6 +1,6 @@
 const SIZES = {
-  full: { width: 180, height: 180 },
-  compact: { width: 180, height: 90 },
+  full: { width: 170, height: 170 },
+  compact: { width: 170, height: 85 },
   medium: { width: 150, height: 150 },
   strip: { width: 150, height: 75 },
 };

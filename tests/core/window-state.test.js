@@ -21,9 +21,9 @@ describe('clampToDisplays', () => {
 import { viewSize, normalizeViewMode } from '../../src/core/window-state.js';
 
 describe('viewSize / normalizeViewMode', () => {
-  it('полный вид 180x180, компактный 180x90', () => {
-    expect(viewSize('full')).toEqual({ width: 180, height: 180 });
-    expect(viewSize('compact')).toEqual({ width: 180, height: 90 });
+  it('полный вид 170x170, компактный 170x85', () => {
+    expect(viewSize('full')).toEqual({ width: 170, height: 170 });
+    expect(viewSize('compact')).toEqual({ width: 170, height: 85 });
   });
   it('неизвестный режим — полный', () => {
     expect(normalizeViewMode('bogus')).toBe('full');
