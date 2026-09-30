@@ -6,3 +6,4 @@ out/
 !.env.example
 .superpowers/
 supabase.config.json
+.supabase
