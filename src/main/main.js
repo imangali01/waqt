@@ -20,6 +20,7 @@ import { windowsForDate } from '../core/windows.js';
 import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
 import { dueAzan } from '../core/azan.js';
+import { needsAutostart } from '../core/autostart.js';
 import { clampToDisplays, viewSize, normalizeViewMode } from '../core/window-state.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -313,8 +314,8 @@ function buildTrayMenu() {
 
 function setupAutostart() {
   // Только для установленного приложения: в dev-режиме не трогаем автозагрузку Windows.
-  if (!app.isPackaged || store.data.settings.autostartSet) return;
+  if (!needsAutostart({ packaged: app.isPackaged, settings: store.data.settings, exePath: process.execPath })) return;
   app.setLoginItemSettings({ openAtLogin: true });
-  store.data.settings.autostartSet = true;
+  store.data.settings.autostartPath = process.execPath;
   store.save();
 }
