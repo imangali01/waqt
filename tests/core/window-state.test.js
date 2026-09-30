@@ -34,3 +34,16 @@ describe('viewSize / normalizeViewMode', () => {
     expect(clampToDisplays({ x: 100, y: 1000 }, displays, { width: 200, height: 100 })).toEqual({ x: 100, y: 940 });
   });
 });
+
+import { VIEW_MODES } from '../../src/core/window-state.js';
+
+describe('дополнительные размеры', () => {
+  it('средний 150x150, узкий 75x150', () => {
+    expect(viewSize('medium')).toEqual({ width: 150, height: 150 });
+    expect(viewSize('narrow')).toEqual({ width: 75, height: 150 });
+  });
+  it('порядок режимов для переключения', () => {
+    expect(VIEW_MODES).toEqual(['full', 'compact', 'medium', 'narrow']);
+    expect(normalizeViewMode('narrow')).toBe('narrow');
+  });
+});

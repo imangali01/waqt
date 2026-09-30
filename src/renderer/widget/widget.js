@@ -113,10 +113,14 @@ window.waqt.onSync((s) => {
 });
 
 let mode = 'full';
-window.waqt.onMode((m) => {
+let modes = ['full', 'compact', 'medium', 'narrow'];
+const SIZE_LABEL = { full: '200×200', compact: '200×100', medium: '150×150', narrow: '75×150' };
+window.waqt.onMode((m, all) => {
   mode = m;
-  document.documentElement.classList.toggle('compact', m === 'compact');
-  $('view-btn').title = m === 'compact' ? 'Обычный вид' : 'Компактный вид';
-  $('view-ico').setAttribute('d', m === 'compact' ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6');
+  if (all) modes = all;
+  const cl = document.documentElement.classList;
+  for (const x of modes) cl.toggle(x, x === m);
+  const next = modes[(modes.indexOf(m) + 1) % modes.length];
+  $('view-btn').title = `Размер окна: ${SIZE_LABEL[m]} (далее ${SIZE_LABEL[next]})`;
 });
-$('view-btn').addEventListener('click', () => window.waqt.setView(mode === 'compact' ? 'full' : 'compact'));
+$('view-btn').addEventListener('click', () => window.waqt.setView(modes[(modes.indexOf(mode) + 1) % modes.length]));

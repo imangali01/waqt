@@ -22,7 +22,7 @@ import { dueReminder } from '../core/reminders.js';
 import { dueAzan } from '../core/azan.js';
 import { supabaseConfig } from '../core/config.js';
 import { needsAutostart } from '../core/autostart.js';
-import { clampToDisplays, viewSize, normalizeViewMode } from '../core/window-state.js';
+import { clampToDisplays, viewSize, normalizeViewMode, VIEW_MODES } from '../core/window-state.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
@@ -93,7 +93,7 @@ function createWindow() {
     if (!quitting) { e.preventDefault(); win.hide(); }
   });
   win.loadFile(path.join(__dirname, '../renderer/index.html'));
-  win.webContents.on('did-finish-load', () => win.webContents.send('mode', viewMode));
+  win.webContents.on('did-finish-load', () => win.webContents.send('mode', viewMode, VIEW_MODES));
 }
 
 let switching = false;
@@ -114,11 +114,11 @@ async function setViewMode(mode) {
   store.data.settings.viewMode = mode;
   store.save();
   // Растём — сначала раскладка, потом окно; сжимаемся — сначала окно, потом раскладка.
-  if (size.height > from.height) win.webContents.send('mode', mode);
+  if (size.height * size.width > from.height * from.width) win.webContents.send('mode', mode, VIEW_MODES);
   win.setResizable(true);
   await animateBounds(win, from, to);
   win.setResizable(false);
-  if (size.height <= from.height) win.webContents.send('mode', mode);
+  if (size.height * size.width <= from.height * from.width) win.webContents.send('mode', mode, VIEW_MODES);
   store.data.window = { x: to.x, y: to.y };
   store.save();
   buildTrayMenu();
@@ -308,6 +308,8 @@ function buildTrayMenu() {
     { label: 'Вид окна', submenu: [
       { label: 'Обычный 200×200', type: 'radio', checked: viewMode === 'full', click: () => setViewMode('full') },
       { label: 'Компактный 200×100', type: 'radio', checked: viewMode === 'compact', click: () => setViewMode('compact') },
+      { label: 'Средний 150×150', type: 'radio', checked: viewMode === 'medium', click: () => setViewMode('medium') },
+      { label: 'Узкий 75×150', type: 'radio', checked: viewMode === 'narrow', click: () => setViewMode('narrow') },
     ] },
     { label: 'История', click: () => { showWidget(); win.webContents.send('open-history-request'); } },
     { label: 'Войти в аккаунт', click: openLogin },
