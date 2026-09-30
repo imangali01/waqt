@@ -6,6 +6,7 @@
   :root { --bg: #0f1512; --card: #17201b; --ink: #eef3ef; --muted: #9aa7a0; --line: #26332c; }
 }
 * { box-sizing: border-box; }
+html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
 html { scroll-behavior: smooth; }
 body { margin: 0; overflow-x: hidden; background: var(--bg); color: var(--ink); font-family: "Onest", "Segoe UI", system-ui, sans-serif; line-height: 1.55; }
 a { color: var(--green-d); }

@@ -17,6 +17,7 @@ body[data-phase="maghrib"] { --sky-a: #a2605a; --sky-b: #c56f49; --sky-c: #693c4
 body[data-phase="isha"]    { --sky-a: #1f2a44; --sky-b: #2d3b5f; --sky-c: #3d3560; }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
 html { background: #2a2418; }
 body {
   margin: 0; min-height: 100vh; min-height: 100dvh; color: var(--text); font-family: var(--font);
