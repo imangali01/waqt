@@ -119,7 +119,9 @@ window.waqt.onMode((m, all) => {
   mode = m;
   if (all) modes = all;
   const cl = document.documentElement.classList;
-  for (const x of modes) cl.toggle(x, x === m);
+  // Средний = обычная раскладка, полоса = компактная; оба уменьшены через zoom (см. widget.css).
+  const on = { full: [], compact: ['compact'], medium: ['medium'], strip: ['compact', 'strip'] }[m] ?? [];
+  for (const x of ['compact', 'medium', 'strip']) cl.toggle(x, on.includes(x));
   const next = modes[(modes.indexOf(m) + 1) % modes.length];
   $('view-btn').title = `Размер окна: ${SIZE_LABEL[m]} (далее ${SIZE_LABEL[next]})`;
 });
