@@ -65,5 +65,5 @@ function trayPng(size = 32) {
 fs.writeFileSync(path.join(outDir, 'chime.wav'), chimeWav());
 fs.writeFileSync(path.join(outDir, 'tray.png'), trayPng());
 fs.mkdirSync('build', { recursive: true });
-fs.writeFileSync(path.join('build', 'icon.png'), trayPng(256));
+fs.writeFileSync(path.join('build', 'icon.png'), trayPng(512));
 console.log('assets generated');
