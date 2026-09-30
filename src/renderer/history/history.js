@@ -1,7 +1,7 @@
-import { daysWord } from '../../core/plural.js';
+import { daysLabel, prayerName } from '../../core/i18n.js';
+import { initLang, getLang, tr } from '../i18n-dom.js';
 
 const $ = (id) => document.getElementById(id);
-const NAMES = { fajr: 'Фаджр', dhuhr: 'Зухр', asr: 'Аср', maghrib: 'Магриб', isha: 'Иша' };
 const PRAYERS = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
 const COUNT = 14;
 
@@ -36,13 +36,13 @@ async function load() {
     row.className = 'h-row';
     const label = document.createElement('div');
     label.className = 'h-prayer';
-    label.textContent = NAMES[prayer];
+    label.textContent = prayerName(getLang(), prayer);
     row.append(label);
     for (const c of cols) {
       const status = c.cells.find((x) => x.prayer === prayer).status;
       const cell = document.createElement('button');
       cell.className = `cell ${status}`;
-      cell.textContent = NAMES[prayer];
+      cell.textContent = prayerName(getLang(), prayer);
       cell.addEventListener('click', async () => {
         if (await window.waqt.toggleCell(c.date, prayer)) load();
       });
@@ -73,11 +73,13 @@ $('h-month').addEventListener('change', (e) => {
   if (e.target.value) { start = `${e.target.value}-01`; load(); }
 });
 
-window.waqt.onState((s) => {
-  const n = s.streak ?? 0;
-  $('h-streak').textContent = `Серия: ${n} ${daysWord(n)}`;
-  $('h-streak').classList.toggle('on', n > 0);
-});
+let streakN = 0;
+function renderStreak() {
+  $('h-streak').textContent = tr('h.streak', { n: streakN, days: daysLabel(getLang(), streakN) });
+  $('h-streak').classList.toggle('on', streakN > 0);
+}
+window.waqt.onState((s) => { streakN = s.streak ?? 0; renderStreak(); });
+initLang(() => { renderStreak(); if (!$('history').hidden) load(); });
 
 window.waqt.onView((v) => (v === 'history' ? enterHistory() : leaveHistory()));
 window.waqt.onOpenHistoryRequest(() => window.waqt.openHistory());

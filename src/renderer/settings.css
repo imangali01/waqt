@@ -13,3 +13,9 @@ h2 { font-size: 13px; font-weight: 700; color: #7d848b; margin: 0 0 10px; }
 .name { font-size: 13px; font-weight: 700; }
 .dim { font-size: 12px; color: #7d848b; font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+h2.second { margin-top: 18px; }
+.langs { display: flex; gap: 8px; }
+.lang { flex: 1; height: 40px; border: 2px solid #eef0f2; border-radius: 20px; background: #fff; font: inherit; font-weight: 700; cursor: pointer;
+  color: inherit; transition: border-color .15s ease, background-color .15s ease; }
+.lang:hover { background: #f7f9f8; }
+.lang.on { border-color: #2BA36B; background: #eef7f1; }

@@ -15,10 +15,10 @@
         <div id="sub" class="who-sub"></div>
       </div>
       <div class="tools">
-      <button id="view-btn" class="viewbtn" title="Настройки">
+      <button id="view-btn" class="viewbtn" data-i18n-title="settings.tip">
         <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="16" cy="7" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="17" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
       </button>
-      <button id="history-btn" class="crescent" title="История намазов">
+      <button id="history-btn" class="crescent" data-i18n-title="history.tip">
         <svg viewBox="0 0 24 24" width="26" height="26">
           <defs><mask id="moon"><rect width="24" height="24" fill="#fff"/><circle cx="14.4" cy="12" r="5.28" fill="#000"/></mask></defs>
           <circle cx="12" cy="12" r="10.4" fill="#fff" stroke="#2BA36B" stroke-width="1.7"/>
@@ -28,12 +28,12 @@
       </div>
     </header>
     <div id="middle" class="middle">
-      <button id="name-chip" class="chip" title="Имя Аллаха дня" hidden></button>
+      <button id="name-chip" class="chip" data-i18n-title="name.tip" hidden></button>
       <button id="missed-btn" class="miss-badge" title="Отметить пропущенный как прочитанный позже" hidden></button>
     </div>
     <div class="clock">
       <span id="timer" class="timer level-normal">--:--</span><span id="seconds" class="seconds"></span>
-      <button id="mark-btn" class="mark" title="Я прочитал" hidden>
+      <button id="mark-btn" class="mark" data-i18n-title="mark.tip" hidden>
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
@@ -57,21 +57,21 @@
   <audio id="azan" src="../../assets/azan.mp3" preload="auto"></audio>
   <section id="history" class="history-card" hidden>
     <header class="h-head">
-      <div class="h-title">История намазов <span id="h-streak" class="h-streak"></span></div>
+      <div class="h-title"><span data-i18n="h.title"></span> <span id="h-streak" class="h-streak"></span></div>
       <div class="h-nav">
-        <button id="h-prev" title="На неделю назад">‹</button>
-        <input id="h-month" type="month" title="Месяц">
-        <button id="h-next" title="На неделю вперёд">›</button>
-        <button id="h-close" class="h-close" title="Закрыть">✕</button>
+        <button id="h-prev" data-i18n-title="h.prev">‹</button>
+        <input id="h-month" type="month" data-i18n-title="h.month">
+        <button id="h-next" data-i18n-title="h.next">›</button>
+        <button id="h-close" class="h-close" data-i18n-title="h.close">✕</button>
       </div>
     </header>
     <div id="h-table" class="h-table"></div>
     <footer class="h-legend">
-      <span class="lg on_time">вовремя</span>
-      <span class="lg late">позже</span>
-      <span class="lg missed">пропущен</span>
-      <span class="lg nodata">нет данных</span>
-      <span class="hint">Клик: красный или серый — «прочитан позже», зелёный или жёлтый — отменить</span>
+      <span class="lg on_time" data-i18n="lg.on_time"></span>
+      <span class="lg late" data-i18n="lg.late"></span>
+      <span class="lg missed" data-i18n="lg.missed"></span>
+      <span class="lg nodata" data-i18n="lg.nodata"></span>
+      <span class="hint" data-i18n="h.hint"></span>
     </footer>
   </section>
   <script type="module" src="widget/widget.js"></script>

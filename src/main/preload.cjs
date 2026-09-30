@@ -8,6 +8,8 @@ contextBridge.exposeInMainWorld('waqt', {
   onOpenHistoryRequest: (cb) => ipcRenderer.on('open-history-request', () => cb()),
   onMode: (cb) => ipcRenderer.on('mode', (_e, m, all) => cb(m, all)),
   setView: (mode) => ipcRenderer.invoke('view:set', mode),
+  setLang: (l) => ipcRenderer.invoke('lang:set', l),
+  onLang: (cb) => ipcRenderer.on('lang', (_e, l) => cb(l)),
   openSettings: () => ipcRenderer.invoke('settings:open'),
   getSettings: () => ipcRenderer.invoke('settings:get'),
   onSettings: (cb) => ipcRenderer.on('settings', (_e, s) => cb(s)),

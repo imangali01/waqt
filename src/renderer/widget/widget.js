@@ -1,4 +1,5 @@
-import { daysWord } from '../../core/plural.js';
+import { daysLabel, prayerName } from '../../core/i18n.js';
+import { initLang, tr, getLang } from '../i18n-dom.js';
 
 const $ = (id) => document.getElementById(id);
 let current = null;
@@ -7,8 +8,8 @@ function renderStreak(n) {
   $('streak-n').textContent = n;
   $('streak').classList.toggle('on', n > 0);
   $('streak').title = n > 0
-    ? `Серия: ${n} ${daysWord(n)} подряд, все 5 намазов вовремя`
-    : 'Серия начнётся, когда все 5 намазов будут прочитаны вовремя';
+    ? tr('streak.on', { n, days: daysLabel(getLang(), n) })
+    : tr('streak.off');
 }
 
 function renderDots(dots) {
@@ -16,7 +17,7 @@ function renderDots(dots) {
     ...dots.map((d) => {
       const el = document.createElement('span');
       el.className = `dot ${d.status}`;
-      el.title = d.name;
+      el.title = prayerName(getLang(), d.prayer);
       return el;
     }),
   );
@@ -28,7 +29,7 @@ function render(s) {
   renderStreak(s.streak ?? 0);
   const missed = s.missed ?? [];
   $('missed-btn').hidden = missed.length === 0;
-  $('missed-btn').title = 'Отметить пропущенный намаз как прочитанный позже';
+  $('missed-btn').title = tr('missed.tip');
   $('missed-btn').textContent = missed.length ? `! ${missed.length}` : '';
   const chip = $('name-chip');
   chip.hidden = !(s.phase === 'gap' && s.name);
@@ -45,9 +46,9 @@ function render(s) {
   $('mark-btn').classList.toggle('done', Boolean(s.marked));
 
   if (s.phase === 'nodata') {
-    $('kicker').textContent = 'Нет данных';
-    $('label').textContent = 'Время намаза';
-    $('sub').textContent = 'не загружено';
+    $('kicker').textContent = tr('nodata.kicker');
+    $('label').textContent = tr('nodata.label');
+    $('sub').textContent = tr('nodata.sub');
     $('timer').textContent = '--:--';
     $('timer').className = 'timer level-normal';
     $('seconds').textContent = '';
@@ -55,9 +56,9 @@ function render(s) {
     return;
   }
   const level = s.level ?? 'normal';
-  $('kicker').textContent = s.phase === 'prayer' ? 'Сейчас' : 'Следующий';
-  $('label').textContent = s.prayerName;
-  $('sub').textContent = s.phase === 'prayer' ? `до ${s.atText}` : `в ${s.atText}`;
+  $('kicker').textContent = s.phase === 'prayer' ? tr('now') : tr('next');
+  $('label').textContent = prayerName(getLang(), s.prayer);
+  $('sub').textContent = s.phase === 'prayer' ? tr('until', { t: s.atText }) : tr('at', { t: s.atText });
   $('timer').textContent = s.text;
   $('timer').className = `timer level-${level}${s.pulse ? ' pulse' : ''}`;
   $('seconds').textContent = `:${s.seconds}`;
@@ -109,7 +110,7 @@ $('name-face').addEventListener('click', () => { $('name-face').hidden = true; }
 
 window.waqt.onSync((s) => {
   $('sync').hidden = s.ok || s.reason === 'no-session' && false;
-  $('sync').title = s.ok ? '' : `Не синхронизировано: ${s.reason}`;
+  $('sync').title = s.ok ? '' : tr('sync.error', { reason: s.reason });
 });
 
 window.waqt.onMode((m) => {
@@ -119,3 +120,5 @@ window.waqt.onMode((m) => {
   for (const x of ['compact', 'medium', 'strip', 'scaled']) cl.toggle(x, on.includes(x));
 });
 $('view-btn').addEventListener('click', () => window.waqt.openSettings());
+
+initLang(() => { if (current) render(current); });

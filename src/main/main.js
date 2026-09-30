@@ -21,6 +21,7 @@ import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
 import { dueAzan } from '../core/azan.js';
 import { supabaseConfig } from '../core/config.js';
+import { normalizeLang, t } from '../core/i18n.js';
 import { needsAutostart } from '../core/autostart.js';
 import { clampToDisplays, viewSize, normalizeViewMode, VIEW_MODES } from '../core/window-state.js';
 
@@ -64,6 +65,7 @@ let quitting = false;
 let historyOpen = false;
 let widgetBounds = null;
 let viewMode = normalizeViewMode(store.data.settings.viewMode);
+let lang = normalizeLang(store.data.settings.lang);
 
 function createWindow() {
   const size = viewSize(viewMode);
@@ -131,14 +133,24 @@ ipcMain.handle('view:set', async (_e, mode) => {
   settingsWin?.webContents.send('settings', { viewMode });
   return ok;
 });
-ipcMain.handle('settings:get', () => ({ viewMode, modes: VIEW_MODES }));
+ipcMain.handle('settings:get', () => ({ viewMode, modes: VIEW_MODES, lang }));
+ipcMain.handle('lang:set', (_e, l) => {
+  lang = normalizeLang(l);
+  store.data.settings.lang = lang;
+  store.save();
+  for (const w of BrowserWindow.getAllWindows()) w.webContents.send('lang', lang);
+  settingsWin?.setTitle(t(lang, 'win.settings'));
+  loginWin?.setTitle(t(lang, 'login.title'));
+  buildTrayMenu();
+  return lang;
+});
 ipcMain.handle('settings:open', () => openSettings());
 
 let settingsWin = null;
 function openSettings() {
   if (settingsWin) { settingsWin.focus(); return; }
   settingsWin = new BrowserWindow({
-    width: 380, height: 460, useContentSize: true, resizable: false, autoHideMenuBar: true, title: 'Настройки Waqt', alwaysOnTop: true,
+    width: 380, height: 570, useContentSize: true, resizable: false, autoHideMenuBar: true, title: t(lang, 'win.settings'), alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true, nodeIntegration: false, sandbox: true,
@@ -237,7 +249,7 @@ function scheduleSync() {
 function openLogin() {
   if (loginWin) { loginWin.focus(); return; }
   loginWin = new BrowserWindow({
-    width: 340, height: 330, resizable: false, autoHideMenuBar: true, title: 'Вход в Waqt', alwaysOnTop: true,
+    width: 340, height: 330, resizable: false, autoHideMenuBar: true, title: t(lang, 'login.title'), alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true, nodeIntegration: false, sandbox: true,
@@ -248,10 +260,10 @@ function openLogin() {
 }
 
 ipcMain.handle('auth:login', async (_e, email, password) => {
-  if (!client) return { ok: false, error: 'Supabase не настроен (.env)' };
+  if (!client) return { ok: false, error: t(lang, 'login.noconfig') };
   const { error } = await client.auth.signInWithPassword({ email, password });
   if (error) {
-    return { ok: false, error: /invalid login/i.test(error.message) ? 'Неверный email или пароль' : error.message };
+    return { ok: false, error: /invalid login/i.test(error.message) ? t(lang, 'login.badcreds') : error.message };
   }
   runSync();
   return { ok: true };
@@ -324,11 +336,11 @@ function createTray() {
 
 function buildTrayMenu() {
   tray.setContextMenu(Menu.buildFromTemplate([
-    { label: 'Показать / Скрыть', click: toggleWidget },
-    { label: 'Настройки', click: openSettings },
-    { label: 'История', click: () => { showWidget(); win.webContents.send('open-history-request'); } },
-    { label: 'Войти в аккаунт', click: openLogin },
-    { label: 'Выйти', click: () => { quitting = true; app.quit(); } },
+    { label: t(lang, 'tray.toggle'), click: toggleWidget },
+    { label: t(lang, 'tray.settings'), click: openSettings },
+    { label: t(lang, 'tray.history'), click: () => { showWidget(); win.webContents.send('open-history-request'); } },
+    { label: t(lang, 'tray.login'), click: openLogin },
+    { label: t(lang, 'tray.quit'), click: () => { quitting = true; app.quit(); } },
   ]));
 }
 
