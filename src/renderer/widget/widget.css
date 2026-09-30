@@ -104,50 +104,5 @@ html.compact .dot { width: 7px; height: 7px; }
 html.compact .dot.pending { box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px var(--orange); }
 html.compact .face { border-radius: 26px; }
 
-/* Средний вид 150x150 */
-html.medium, html.medium body { width: 150px; height: 150px; }
-html.medium .card { width: 150px; height: 150px; border-radius: 28px; padding: 12px 13px 11px; }
-html.medium .kicker, html.medium .middle { display: none; }
-html.medium .who-name { font-size: 19px; margin-top: 0; }
-html.medium .who-sub { font-size: 11px; margin-top: 1px; }
-html.medium .tools { gap: 3px; flex-direction: row; }
-html.medium .crescent svg { width: 22px; height: 22px; }
-html.medium .clock { flex: 1; align-items: center; }
-html.medium .timer { font-size: 34px; }
-html.medium .seconds { font-size: 14px; }
-html.medium .mark { width: 28px; height: 28px; bottom: auto; top: 50%; transform: translateY(-50%); }
-html.medium .mark:active { transform: translateY(-50%) scale(.92); }
-html.medium .mark svg { width: 15px; height: 15px; }
-html.medium .foot { margin-top: 6px; height: 10px; }
-html.medium .streak { font-size: 11px; gap: 3px; }
-html.medium .streak svg { width: 11px; height: 11px; }
-html.medium .dots { gap: 4px; }
-html.medium .dot { width: 7px; height: 7px; }
-html.medium .face { border-radius: 28px; }
-
-/* Полоса 150x75 */
-html.strip, html.strip body { width: 150px; height: 75px; }
-html.strip .card { width: 150px; height: 75px; border-radius: 20px; padding: 6px 10px 7px; }
-html.strip .kicker, html.strip .middle, html.strip .who-sub { display: none; }
-html.strip .top { align-items: center; }
-html.strip .who-name { font-size: 13px; margin-top: 0; }
-html.strip .tools { gap: 3px; }
-html.strip .crescent svg { width: 16px; height: 16px; }
-html.strip .viewbtn svg { width: 12px; height: 12px; }
-html.strip .clock { flex: 1; align-items: center; }
-html.strip .timer { font-size: 28px; letter-spacing: -.04em; }
-html.strip .seconds { font-size: 12px; margin-left: 2px; }
-html.strip .mark { width: 24px; height: 24px; bottom: auto; top: 50%; transform: translateY(-50%); border-width: 2px; }
-html.strip .mark:active { transform: translateY(-50%) scale(.92); }
-html.strip .mark svg { width: 13px; height: 13px; }
-html.strip .bar { height: 3px; margin-top: 1px; }
-html.strip .foot { margin-top: 4px; height: 8px; }
-html.strip .streak { font-size: 9px; gap: 2px; }
-html.strip .streak svg { width: 9px; height: 9px; }
-html.strip .dots { gap: 4px; }
-html.strip .dot { width: 6px; height: 6px; }
-html.strip .dot.pending { box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px var(--orange); }
-html.strip .face { border-radius: 20px; padding: 6px 8px; }
-html.strip .face-ar { font-size: 26px; line-height: 1.2; }
-html.strip .face-tr { font-size: 12px; margin-top: 0; }
-html.strip .face-tl, html.strip .face-desc { display: none; }
+/* Средний 150x150 и полоса 150x75 — те же раскладки (обычная и компактная), уменьшенные до 75% */
+html.medium, html.strip { zoom: .75; }
