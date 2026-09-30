@@ -72,7 +72,7 @@ function createWindow() {
   const pos = clampToDisplays(store.data.window, screen.getAllDisplays(), size);
   win = new BrowserWindow({
     ...size, icon: path.join(__dirname, '../../assets/tray.png'), frame: false, transparent: true, resizable: false,
-    alwaysOnTop: true, hasShadow: false, show: true, skipTaskbar: !store.data.settings.taskbar,
+    alwaysOnTop: true, hasShadow: false, show: true, skipTaskbar: true,
     ...(pos ?? {}),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
@@ -133,13 +133,7 @@ ipcMain.handle('view:set', async (_e, mode) => {
   settingsWin?.webContents.send('settings', { viewMode });
   return ok;
 });
-ipcMain.handle('settings:get', () => ({ viewMode, modes: VIEW_MODES, lang, taskbar: Boolean(store.data.settings.taskbar) }));
-ipcMain.handle('taskbar:set', (_e, on) => {
-  store.data.settings.taskbar = Boolean(on);
-  store.save();
-  win.setSkipTaskbar(!on);
-  return Boolean(on);
-});
+ipcMain.handle('settings:get', () => ({ viewMode, modes: VIEW_MODES, lang }));
 ipcMain.handle('lang:set', (_e, l) => {
   lang = normalizeLang(l);
   store.data.settings.lang = lang;
@@ -156,7 +150,7 @@ let settingsWin = null;
 function openSettings() {
   if (settingsWin) { settingsWin.focus(); return; }
   settingsWin = new BrowserWindow({
-    width: 380, height: 640, useContentSize: true, resizable: false, autoHideMenuBar: true, title: t(lang, 'win.settings'), alwaysOnTop: true,
+    width: 380, height: 570, useContentSize: true, resizable: false, autoHideMenuBar: true, title: t(lang, 'win.settings'), alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true, nodeIntegration: false, sandbox: true,

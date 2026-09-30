@@ -9,12 +9,9 @@ const SIZES = {
 };
 const sizesEl = document.getElementById('sizes');
 const langsEl = document.getElementById('langs');
-let state = { viewMode: 'full', modes: Object.keys(SIZES), lang: 'ru', taskbar: false };
-const taskbarEl = document.getElementById('taskbar');
-taskbarEl.addEventListener('change', () => window.waqt.setTaskbar(taskbarEl.checked));
+let state = { viewMode: 'full', modes: Object.keys(SIZES), lang: 'ru' };
 
 function render() {
-  taskbarEl.checked = Boolean(state.taskbar);
   sizesEl.replaceChildren(...state.modes.map((m) => {
     const s = SIZES[m];
     const b = document.createElement('button');

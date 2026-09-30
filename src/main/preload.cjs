@@ -10,7 +10,6 @@ contextBridge.exposeInMainWorld('waqt', {
   setView: (mode) => ipcRenderer.invoke('view:set', mode),
   setLang: (l) => ipcRenderer.invoke('lang:set', l),
   onLang: (cb) => ipcRenderer.on('lang', (_e, l) => cb(l)),
-  setTaskbar: (on) => ipcRenderer.invoke('taskbar:set', on),
   openSettings: () => ipcRenderer.invoke('settings:open'),
   getSettings: () => ipcRenderer.invoke('settings:get'),
   onSettings: (cb) => ipcRenderer.on('settings', (_e, s) => cb(s)),
