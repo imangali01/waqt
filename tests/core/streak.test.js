@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { computeStreak } from '../../src/core/streak.js';
 import { setMark } from '../../src/core/marks.js';
-import { PRAYERS } from '../../src/core/windows.js';
+import { PRAYERS } from '../../src/core/prayer-windows.js';
 import { T, at } from '../fixtures.js';
 
 // Пять дней данных подряд: 06-28 … 07-02 (Иша 07-02 закрывается фаджром 07-03).

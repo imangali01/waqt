@@ -6,7 +6,7 @@ import { DAYS, at } from '../fixtures.js';
 describe('buildSnapshot', () => {
   it('добавляет русское название намаза', () => {
     const s = buildSnapshot(DAYS, {}, at('2026-07-01', '13:00'));
-    expect(s).toMatchObject({ phase: 'prayer', prayer: 'dhuhr', prayerName: 'Зухр', marked: false });
+    expect(s).toMatchObject({ phase: 'prayer', prayer: 'dhuhr', marked: false });
   });
   it('nodata без названия', () => {
     expect(buildSnapshot({}, {}, at('2026-07-01', '13:00'))).toMatchObject({ phase: 'nodata' });
@@ -20,7 +20,7 @@ describe('buildSnapshot', () => {
     const s = buildSnapshot(DAYS, marks, at('2026-07-01', '13:00'));
     expect(s.dots.map((d) => d.status)).toEqual(['on_time', 'pending', 'upcoming', 'upcoming', 'upcoming']);
     const s2 = buildSnapshot(DAYS, {}, at('2026-07-01', '18:00'));
-    expect(s2.missed).toEqual([{ date: '2026-07-01', prayer: 'fajr', name: 'Фаджр' }, { date: '2026-07-01', prayer: 'dhuhr', name: 'Зухр' }]);
+    expect(s2.missed).toEqual([{ date: '2026-07-01', prayer: 'fajr' }, { date: '2026-07-01', prayer: 'dhuhr' }]);
     expect(s2.dots.map((d) => d.status)).toEqual(['missed', 'missed', 'pending', 'upcoming', 'upcoming']);
   });
   it('nodata содержит пустые точки', () => {

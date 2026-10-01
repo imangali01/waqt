@@ -13,11 +13,12 @@ function copy(from, to) {
   fs.copyFileSync(from, to);
 }
 
-// Общая логика (чистые модули без Electron).
+// Общая логика (чистые модули без Electron). Старая копия удаляется, чтобы не оставались переименованные файлы.
+fs.rmSync(path.join(app, 'src'), { recursive: true, force: true });
 for (const f of fs.readdirSync(path.join(root, 'src/core'))) {
   copy(path.join(root, 'src/core', f), path.join(app, 'src/core', f));
 }
-copy(path.join(root, 'src/web/api.js'), path.join(app, 'src/web/api.js'));
+copy(path.join(root, 'src/web/web-api.js'), path.join(app, 'src/web/web-api.js'));
 copy(path.join(root, 'assets/names.json'), path.join(app, 'names.json'));
 copy(path.join(root, 'assets/chime.wav'), path.join(app, 'chime.wav'));
 

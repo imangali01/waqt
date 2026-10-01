@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { needsAutostart } from '../../src/core/autostart.js';
+import { needsAutostart } from '../../src/main/autostart.js';
 
 describe('needsAutostart', () => {
   it('не установленное приложение — не трогаем', () => {

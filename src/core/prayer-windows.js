@@ -1,7 +1,6 @@
 import { toInstant, addDays } from './tz.js';
 
 export const PRAYERS = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-export const PRAYER_NAMES = { fajr: 'Фаджр', dhuhr: 'Зухр', asr: 'Аср', maghrib: 'Магриб', isha: 'Иша' };
 const END_OF = { fajr: 'sunrise', dhuhr: 'asr', asr: 'sunset', maghrib: 'isha' };
 
 export function windowsForDate(days, date) {

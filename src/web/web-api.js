@@ -3,7 +3,7 @@
 import { fetchYear } from '../core/times.js';
 import { buildSnapshot } from '../core/snapshot.js';
 import { computeState } from '../core/state.js';
-import { windowsForDate } from '../core/windows.js';
+import { windowsForDate } from '../core/prayer-windows.js';
 import { dateOf, addDays } from '../core/tz.js';
 import { buildHistory } from '../core/history.js';
 import { setMark, clearMark, decideStatus, markLateIfMissed, historyAction, trackDay, getMark, statusOfWindow } from '../core/marks.js';
