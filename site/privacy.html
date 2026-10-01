@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Политика конфиденциальности — Waqt</title>
+  <meta name="description" content="Какие данные использует Waqt: время намаза, отметки, вход в аккаунт, push-уведомления. Без рекламы, аналитики и передачи третьим лицам.">
+  <meta name="theme-color" content="#eef3ef">
+  <link rel="icon" href="assets/logo-64.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800;900&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="./"><img src="assets/logo-64.png" alt="" width="28" height="28"> Waqt</a>
+    <nav><a href="https://github.com/imangali01/waqt">GitHub</a></nav>
+  </header>
+
+  <main class="doc">
+    <h1>Политика конфиденциальности</h1>
+    <p class="muted">Действует с 1 октября 2026 года. Относится к приложению Waqt для Windows и macOS, веб-версии на этом сайте и виджету Scriptable.</p>
+
+    <h2>Коротко</h2>
+    <ul>
+      <li>Без входа в аккаунт все ваши данные остаются на вашем устройстве.</li>
+      <li>Нет рекламы, аналитики, трекеров и продажи данных. Данные никому не передаются, кроме перечисленных ниже сервисов, без которых функция не работает.</li>
+      <li>Исходный код открыт: <a href="https://github.com/imangali01/waqt">github.com/imangali01/waqt</a>. Любое утверждение ниже можно проверить по коду.</li>
+    </ul>
+
+    <h2>Какие данные и где хранятся</h2>
+    <h3>На вашем устройстве</h3>
+    <p>Время намаза за кэшированные дни, ваши отметки («прочитал вовремя» / «позже»), история, язык, размер и положение окна. В приложении для компьютера это файлы в папке профиля пользователя, в веб-версии — локальное хранилище браузера. Эти данные не покидают устройство, пока вы не войдёте в аккаунт.</p>
+
+    <h3>Время намаза</h3>
+    <p>Приложение запрашивает расписание у сервиса <a href="https://api.muftyat.kz">api.muftyat.kz</a> для города Астана (фиксированные координаты города; ваше местоположение не определяется и не отправляется). Как при любом запросе в интернете, сервис видит IP-адрес устройства.</p>
+
+    <h3>Аккаунт и синхронизация (по желанию)</h3>
+    <p>Если вы входите в аккаунт, чтобы видеть отметки на нескольких устройствах, в облачную базу данных Supabase отправляются:</p>
+    <ul>
+      <li>адрес электронной почты и пароль для входа (пароль хранится в виде хеша средствами Supabase Auth; мы его не видим и не сохраняем);</li>
+      <li>отметки: дата, намаз, статус, время отметки;</li>
+      <li>расписание времён намаза для отслеживаемых дней.</li>
+    </ul>
+    <p>Доступ к строкам ограничен политиками безопасности базы: каждый пользователь видит только свои данные. На устройстве сохраняется токен сессии, чтобы не вводить пароль каждый раз; при выходе из аккаунта он удаляется.</p>
+
+    <h3>Push-уведомления на телефоне (по желанию)</h3>
+    <p>Если вы включили уведомления в веб-версии, на сервер сохраняется адрес подписки браузера (endpoint и ключи шифрования), язык интерфейса и служебные записи о том, какие напоминания уже отправлены. Сообщения доставляются через push-службу вашего браузера или ОС (Apple, Google, Mozilla). Отключение уведомлений удаляет подписку.</p>
+
+    <h2>Сервисы, которые участвуют в работе</h2>
+    <ul>
+      <li><strong>Supabase</strong> — аккаунты, база отметок и рассылка push (только при входе).</li>
+      <li><strong>Vercel</strong> — хостинг этого сайта; как любой хостинг, ведёт технические журналы запросов.</li>
+      <li><strong>Google Fonts</strong> — загрузка шрифта Onest на страницах сайта; Google видит IP-адрес посетителя.</li>
+      <li><strong>api.muftyat.kz</strong> — расписание намаза.</li>
+      <li><strong>GitHub</strong> — хранение исходного кода и файлов установки.</li>
+    </ul>
+
+    <h2>Сколько хранятся данные и как удалить</h2>
+    <p>Данные на устройстве хранятся, пока вы не удалите приложение или не очистите данные сайта. Данные аккаунта в облаке хранятся, пока аккаунт существует. Чтобы удалить аккаунт и все связанные данные, напишите в <a href="https://github.com/imangali01/waqt/issues">Issues репозитория</a> (не указывайте пароль) — запись и связанные с ней данные будут удалены.</p>
+
+    <h2>Подпись кода</h2>
+    <p>Установщик для Windows подписывается сертификатом SignPath Foundation. Подпись нужна только для подтверждения издателя и не передаёт данных о вас.</p>
+
+    <h2>Изменения</h2>
+    <p>Изменения политики публикуются на этой странице, история правок видна в репозитории.</p>
+
+    <h2>English summary</h2>
+    <p>Waqt shows the time left until the end of the current prayer. Without an account, all data stays on your device; the app only requests prayer times from api.muftyat.kz (fixed city coordinates, no location access). If you sign in, your email, prayer marks and the prayer schedule are stored in Supabase and are visible only to you. Optional web push stores your browser's push subscription and language. There are no ads, analytics or trackers, and no data is sold or shared beyond the services listed above. To delete your account and data, open an issue at <a href="https://github.com/imangali01/waqt/issues">github.com/imangali01/waqt/issues</a>. The source code is open (MIT).</p>
+  </main>
+
+  <footer class="foot">
+    <span><a href="./">Waqt</a> · <a href="https://github.com/imangali01/waqt/releases">все версии</a> · Политика конфиденциальности</span>
+  </footer>
+</body>
+</html>
