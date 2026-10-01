@@ -64,6 +64,7 @@ function render(s) {
     $('timer').textContent = '--:--';
     $('timer').className = 'timer level-normal';
     $('seconds').textContent = '';
+    $('seconds').className = 'seconds';
     $('bar').style.width = '0';
     return;
   }
@@ -74,15 +75,17 @@ function render(s) {
   $('timer').textContent = s.text;
   $('timer').className = `timer level-${level}${s.pulse ? ' pulse' : ''}`;
   $('seconds').textContent = `:${s.seconds}`;
-  $('bar').className = `level-${level}`;
+  $('seconds').className = `seconds level-${level}${s.pulse ? ' pulse' : ''}`;
+  // Полоса краснеет только пока намаз не отмечен.
+  $('bar').className = s.marked ? 'level-normal' : `level-${level}`;
   $('bar').style.width = s.progress == null ? '0' : `${Math.round(s.progress * 100)}%`;
 }
 
 window.waqt.onState(render);
 
 $('mark-btn').addEventListener('click', async () => {
-  if (current?.marked) return;
-  await window.waqt.mark();
+  if (current?.marked) await window.waqt.unmark();
+  else await window.waqt.mark();
 });
 
 $('missed-btn').addEventListener('click', async () => {

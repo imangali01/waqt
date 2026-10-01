@@ -71,7 +71,6 @@ function renderNow() {
   $('strip-sub').textContent = `${s.phase === 'prayer' ? t(lang, 'now') : t(lang, 'next')} · ${s.phase === 'prayer' ? t(lang, 'until', { t: s.atText }) : t(lang, 'at', { t: s.atText })}`;
   $('timer').textContent = s.text;
   $('seconds').textContent = `:${s.seconds}`;
-  $('bar').style.width = s.progress == null ? '0' : `${Math.round(s.progress * 100)}%`;
   const mark = $('mark-btn');
   mark.hidden = s.phase !== 'prayer';
   mark.classList.toggle('done', Boolean(s.marked));
@@ -137,7 +136,7 @@ async function renderRows() {
       b.type = 'button';
       b.className = 'st-btn';
       b.innerHTML = st.innerHTML;
-      b.title = t(lang, item.status === 'pending' ? 'app.mark' : item.status === 'missed' ? 'app.markLate' : 'app.undo');
+      b.title = t(lang, item.status === 'pending' ? 'app.mark' : item.status === 'missed' ? 'app.markLate' : item.status === 'late' ? 'app.mark' : 'app.undo');
       b.addEventListener('click', async () => {
         if (item.status === 'pending') await api.mark();
         else await api.toggleCell(dateOf(new Date()), item.prayer);

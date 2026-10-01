@@ -12,6 +12,11 @@ describe('dueReminder', () => {
       expect(dueReminder({ snap: snap(t * M - 1000), fired: new Set() })).toMatchObject({ minutes: t });
     }
   });
+  it('каждую минуту в последние 5 минут и каждые 30 секунд в последние 2', () => {
+    for (const t of [4, 3, 2, 1.5, 1, 0.5]) {
+      expect(dueReminder({ snap: snap(t * M - 1000), fired: new Set() })).toMatchObject({ minutes: t });
+    }
+  });
   it('не срабатывает вне порогов', () => {
     expect(dueReminder({ snap: snap(25 * M), fired: new Set() })).toBeNull();
     expect(dueReminder({ snap: snap(12 * M), fired: new Set() })).toBeNull();
@@ -29,6 +34,7 @@ describe('dueReminder', () => {
   });
   it('после сна ПК (порог давно пройден) не играет задним числом', () => {
     expect(dueReminder({ snap: snap(17 * M), fired: new Set() })).toBeNull();
-    expect(dueReminder({ snap: snap(3 * M), fired: new Set() })).toBeNull();
+    expect(dueReminder({ snap: snap(6.5 * M), fired: new Set() })).toBeNull();
+    expect(dueReminder({ snap: snap(2.5 * M), fired: new Set() })).toBeNull();
   });
 });

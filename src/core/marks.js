@@ -40,7 +40,8 @@ export function statusOfWindow(window, mark, now) {
 }
 
 export function historyAction(status) {
-  if (status === 'on_time' || status === 'late') return 'clear';
+  if (status === 'on_time') return 'clear';
+  if (status === 'late') return 'on_time';
   if (status === 'missed' || status === 'nodata') return 'late';
   return null;
 }

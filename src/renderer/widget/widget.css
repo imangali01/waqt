@@ -23,13 +23,15 @@ html, body { margin: 0; width: 200px; height: 200px; background: transparent; ov
   font-variant-numeric: tabular-nums; transition: color .6s ease; }
 .timer.level-warn { color: var(--red); }
 .timer.level-critical { color: var(--maroon); }
-.timer.pulse { animation: pulse 1s ease-in-out infinite; }
+.timer.pulse, .seconds.pulse { animation: pulse 1s ease-in-out infinite; transform-origin: left center; }
 @keyframes pulse {
-  0%, 100% { color: var(--maroon); }
-  50% { color: #FF3B30; }
+  0%, 100% { color: var(--maroon); transform: scale(1); }
+  50% { color: #FF3B30; transform: scale(.92); }
 }
-.seconds { font-size: 19px; font-weight: 700; color: var(--muted); margin-left: 3px;
-  font-variant-numeric: tabular-nums; }
+.seconds { font-size: 46px; font-weight: 900; letter-spacing: -.035em; line-height: 1; color: var(--muted);
+  font-variant-numeric: tabular-nums; transition: color .6s ease; }
+.seconds.level-warn { color: var(--red); }
+.seconds.level-critical { color: var(--maroon); }
 
 .bar { height: 4px; border-radius: 2px; background: var(--track); margin: 7px 0 0; overflow: hidden; }
 .bar i { display: block; height: 100%; width: 0; border-radius: 2px; background: var(--green);
@@ -94,7 +96,7 @@ html.compact .tools { gap: 4px; }
 html.compact .crescent svg { width: 20px; height: 20px; }
 html.compact .clock { flex: 1; align-items: center; }
 html.compact .timer { font-size: 34px; }
-html.compact .seconds { font-size: 15px; }
+html.compact .seconds { font-size: 34px; }
 html.compact .mark { width: 30px; height: 30px; bottom: auto; top: 50%; transform: translateY(-50%); }
 html.compact .mark:active { transform: translateY(-50%) scale(.92); }
 html.compact .mark svg { width: 16px; height: 16px; }

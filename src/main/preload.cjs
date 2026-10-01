@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('waqt', {
   getSettings: () => ipcRenderer.invoke('settings:get'),
   onSettings: (cb) => ipcRenderer.on('settings', (_e, s) => cb(s)),
   mark: () => ipcRenderer.invoke('mark:current'),
+  unmark: () => ipcRenderer.invoke('mark:unmark'),
   markMissed: (date, prayer) => ipcRenderer.invoke('mark:missed', date, prayer),
   openHistory: () => ipcRenderer.invoke('history:open'),
   closeHistory: () => ipcRenderer.invoke('history:close'),

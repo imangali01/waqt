@@ -79,10 +79,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .strip-name { font-size: 20px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .strip-sub { font-size: 12.5px; opacity: .85; font-weight: 500; }
 .strip-time { display: flex; align-items: baseline; direction: ltr; white-space: nowrap; }
-.timer { font-size: 30px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.seconds { font-size: 22px; font-weight: 700; opacity: .85; font-variant-numeric: tabular-nums; }
-.bar-track { height: 3px; background: rgba(0, 0, 0, .2); }
-.bar-track i { display: block; height: 100%; width: 0; background: rgba(255, 255, 255, .85); transition: width 1s linear; }
+.timer, .seconds { font-size: 30px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.seconds { opacity: .85; }
 
 .markpill { height: 54px; border-radius: 27px; border: 1.5px solid rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .2); font-weight: 800; font-size: 17px; letter-spacing: .01em; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: transform .1s ease, background-color .2s ease; }
 .markpill:active { transform: scale(.98); }
