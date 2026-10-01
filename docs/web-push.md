@@ -12,6 +12,6 @@
    `supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=mailto:you@example.com CRON_SECRET=<случайная строка> APP_URL=<адрес сайта>/app/`
 4. Деплой: `npm run functions:build`, затем `supabase functions deploy send-reminders --no-verify-jwt`.
 5. SQL Editor: выполнить `supabase/push-cron.sql`, подставив `CRON_SECRET`.
-6. Опубликовать сайт (Pages). На iPhone: Safari → «На экран Домой» → открыть иконку → войти → нажать колокольчик.
+6. Задеплоить сайт на Vercel (`docs/deploy-vercel.md`). На iPhone: Safari → «На экран Домой» → открыть иконку → войти → нажать колокольчик.
 
 Требования: iOS 16.4+ (только установленная на «Домой» веб-версия), Android — Chrome.

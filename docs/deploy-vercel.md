@@ -16,5 +16,4 @@ VERCEL_TOKEN="$(cat ~/.vercel-token)" npx --yes vercel deploy --prod --yes
 - Прод-деплой Claude Code может блокироваться режимом разрешений: тогда команду запускает пользователь или добавляет Bash-правило в настройках.
 
 ## Заметки
-- GitHub Pages (`.github/workflows/pages.yml`) не используется: в репозитории Pages не включён, workflow `pages` падает на `configure-pages`.
 - Push-уведомления: сервер в Supabase, см. `docs/web-push.md`.
