@@ -13,6 +13,28 @@ const make = (over = {}) => {
   return { ...w, storage, setNow: (d) => { clock = d; } };
 };
 
+describe('демо на лендинге', () => {
+  const demo = () => {
+    const storage = memory();
+    const fetchFn = async () => ({ ok: true, json: async () => ({ result: Object.entries(DAYS).map(([Date, t]) => ({ Date, ...t })) }) });
+    const w = createWebApi({ storage, names: [], fetchFn, demo: true, now: () => at('2026-07-01', '13:00') });
+    return { w, storage };
+  };
+  it('прошедшие намазы отмечены вовремя, идущий и будущие — нет', async () => {
+    const { w } = demo();
+    await w.refresh();
+    const day = await w.api.getDay('2026-07-01');
+    expect(day.map((d) => d.status)).toEqual(['on_time', 'pending', 'upcoming', 'upcoming', 'upcoming']);
+    const hist = await w.api.getHistory('2026-06-30', 1);
+    expect(hist[0].cells.every((c) => c.status === 'on_time')).toBe(true);
+  });
+  it('демо-отметки не пишутся в хранилище браузера', async () => {
+    const { w, storage } = demo();
+    await w.refresh();
+    expect(storage.dump()['waqt.data']).toBeUndefined();
+  });
+});
+
 describe('веб-версия: api для виджета', () => {
   it('tick отдаёт снимок подписчику', () => {
     const w = make();

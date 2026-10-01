@@ -22,8 +22,11 @@ if (embed) document.body.classList.add('embed');
 
 const names = []; // 99 имён подгружаются позже в тот же массив
 const chime = $('chime');
+// Демо в iframe лендинга работает на отдельном хранилище в памяти: общий localStorage принадлежит настоящему приложению.
+const memoryStorage = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => { m.set(k, v); } }; };
 const { api, tick, refresh, syncNow, attachClient } = createWebApi({
-  storage: window.localStorage,
+  storage: embed ? memoryStorage() : window.localStorage,
+  demo: embed,
   names,
   fetchFn: (...a) => fetch(...a),
   playChime: () => { chime.currentTime = 0; chime.play().catch(() => {}); },

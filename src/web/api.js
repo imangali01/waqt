@@ -4,7 +4,7 @@ import { fetchYear } from '../core/times.js';
 import { buildSnapshot } from '../core/snapshot.js';
 import { computeState } from '../core/state.js';
 import { windowsForDate } from '../core/windows.js';
-import { dateOf } from '../core/tz.js';
+import { dateOf, addDays } from '../core/tz.js';
 import { buildHistory } from '../core/history.js';
 import { setMark, clearMark, decideStatus, markLateIfMissed, historyAction, trackDay, getMark, statusOfWindow } from '../core/marks.js';
 import { dueReminder } from '../core/reminders.js';
@@ -13,7 +13,7 @@ import { createSync } from '../core/sync.js';
 
 const KEY = { times: 'waqt.times', marks: 'waqt.marks', data: 'waqt.data', lang: 'waqt.lang' };
 
-export function createWebApi({ storage, names = [], fetchFn, client = null, now = () => new Date(), playChime = () => {}, onSync = () => {} }) {
+export function createWebApi({ storage, names = [], fetchFn, client = null, demo = false, now = () => new Date(), playChime = () => {}, onSync = () => {} }) {
   const read = (k, d) => {
     try { return JSON.parse(storage.getItem(k)) ?? d; } catch { return d; }
   };
@@ -26,7 +26,8 @@ export function createWebApi({ storage, names = [], fetchFn, client = null, now 
     marks: {}, tracked: {}, sync: { lastPulledAt: null },
     ...read(KEY.data, { marks: read(KEY.marks, {}) }),
   };
-  const saveData = () => write(KEY.data, data);
+  // Демо (лендинг) живёт только в памяти и не трогает данные настоящего приложения.
+  const saveData = () => { if (!demo) write(KEY.data, data); };
   let lang = normalizeLang(read(KEY.lang, 'ru'));
   const fired = new Set();
   const langCbs = [];
@@ -45,6 +46,20 @@ export function createWebApi({ storage, names = [], fetchFn, client = null, now 
     }
   }
 
+  // Для примера на лендинге: все прошедшие намазы последних 40 дней прочитаны вовремя.
+  function seedDemo() {
+    const t = now();
+    const today = dateOf(t);
+    for (let i = 0; i < 40; i++) {
+      const date = addDays(today, -i);
+      for (const w of windowsForDate(days, date)) {
+        if (w.end <= t && !getMark(data.marks, date, w.prayer)) {
+          data.marks = setMark(data.marks, date, w.prayer, 'on_time', w.start.toISOString());
+        }
+      }
+    }
+  }
+
   async function refresh() {
     const today = dateOf(now());
     const year = Number(today.slice(0, 4));
@@ -57,6 +72,7 @@ export function createWebApi({ storage, names = [], fetchFn, client = null, now 
       } catch { /* нет сети — остаёмся на кэше */ }
     }
     if (ok) write(KEY.times, days);
+    if (ok && demo) seedDemo();
     return ok;
   }
 
