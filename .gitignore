@@ -16,3 +16,6 @@ site/app/chime.wav
 site/assets/
 .vercel
 .env*
+
+# Генерируется scripts/build-functions.js
+supabase/functions/send-reminders/core/
