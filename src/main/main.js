@@ -1,29 +1,27 @@
-import { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseEnv } from 'node:util';
 import { createJsonFile } from './json-file.js';
+import { createData } from './app-data.js';
+import { animateBounds } from './animate.js';
+import { needsAutostart } from './autostart.js';
+import { clampToDisplays, viewSize, normalizeViewMode, VIEW_MODES } from './widget-bounds.js';
+import { createSupabaseSync } from './supabase-sync.js';
+import { createTray } from './tray.js';
+import { createDialog, secureWebPreferences } from './dialog-window.js';
 import { createTimesSource } from '../core/times.js';
 import { buildSnapshot } from '../core/snapshot.js';
 import { startRefresh } from '../core/refresh.js';
-import { createData } from './app-data.js';
 import { computeState } from '../core/state.js';
 import { setMark, clearMark, decideStatus, historyAction, trackDay, markLateIfMissed } from '../core/marks.js';
 import { buildHistory } from '../core/history.js';
-import { createClient } from '@supabase/supabase-js';
-import WebSocket from 'ws';
-import { parseEnv } from 'node:util';
-import { createSync } from '../core/sync.js';
-import { subscribeMarks } from '../core/realtime.js';
-import { animateBounds } from './animate.js';
 import { windowsForDate } from '../core/prayer-windows.js';
 import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
 import { dueAzan } from '../core/azan.js';
-import { supabaseConfig, hasStoredSession } from '../core/supabase-config.js';
 import { normalizeLang, t } from '../core/i18n.js';
-import { needsAutostart } from './autostart.js';
-import { clampToDisplays, viewSize, normalizeViewMode, VIEW_MODES } from './widget-bounds.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
@@ -35,30 +33,6 @@ const timesSource = createTimesSource({ file: createJsonFile(path.join(userData,
 const store = createData(createJsonFile(path.join(userData, 'data.json')));
 const nowDate = () => new Date(Date.now() + Number(process.env.WAQT_SHIFT_MS ?? 0));
 
-const authFile = createJsonFile(path.join(userData, 'auth.json'));
-const authStorage = {
-  getItem: (k) => authFile.read({})[k] ?? null,
-  setItem: (k, v) => authFile.write({ ...authFile.read({}), [k]: v }),
-  removeItem: (k) => { const o = authFile.read({}); delete o[k]; authFile.write(o); },
-};
-const cfgFile = createJsonFile(path.join(app.getAppPath(), 'supabase.config.json')).read(null);
-const sbCfg = supabaseConfig(process.env, cfgFile);
-const client = sbCfg
-  ? createClient(sbCfg.url, sbCfg.key, {
-    auth: { storage: authStorage, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
-    realtime: { transport: WebSocket },
-  })
-  : null;
-const sync = client ? createSync({ client, data: store.data, save: store.save }) : null;
-let syncTimer;
-let loginWin = null;
-
-const fired = new Set();
-let names = [];
-try {
-  names = JSON.parse(fs.readFileSync(path.join(__dirname, '../../assets/names.json'), 'utf8'));
-} catch { /* имён нет — блок не показывается */ }
-
 let win;
 let tray;
 let quitting = false;
@@ -66,6 +40,21 @@ let historyOpen = false;
 let widgetBounds = null;
 let viewMode = normalizeViewMode(store.data.settings.viewMode);
 let lang = normalizeLang(store.data.settings.lang);
+
+const supa = createSupabaseSync({
+  userData, appPath: app.getAppPath(), env: process.env, store,
+  onResult: (res) => win?.webContents.send('sync', res),
+});
+const scheduleSync = () => supa?.scheduleSync();
+
+const fired = new Set();
+let names = [];
+try {
+  names = JSON.parse(fs.readFileSync(path.join(__dirname, '../../assets/names.json'), 'utf8'));
+} catch { /* имён нет — блок не показывается */ }
+
+const settings = createDialog('settings.html', () => ({ width: 380, height: 570, useContentSize: true, title: t(lang, 'win.settings') }));
+const login = createDialog('login.html', () => ({ width: 340, height: 330, title: t(lang, 'login.title') }));
 
 function createWindow() {
   const size = viewSize(viewMode);
@@ -75,8 +64,7 @@ function createWindow() {
     alwaysOnTop: true, hasShadow: false, show: true, skipTaskbar: true,
     ...(pos ?? {}),
     webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
-      contextIsolation: true, nodeIntegration: false, sandbox: true,
+      ...secureWebPreferences(),
       backgroundThrottling: false, autoplayPolicy: 'no-user-gesture-required',
     },
   });
@@ -123,14 +111,14 @@ async function setViewMode(mode) {
   if (size.height * size.width <= from.height * from.width) win.webContents.send('mode', mode, VIEW_MODES);
   store.data.window = { x: to.x, y: to.y };
   store.save();
-  buildTrayMenu();
+  tray.rebuildMenu();
   switching = false;
   return true;
 }
 
 ipcMain.handle('view:set', async (_e, mode) => {
   const ok = await setViewMode(mode);
-  settingsWin?.webContents.send('settings', { viewMode });
+  settings.window?.webContents.send('settings', { viewMode });
   return ok;
 });
 ipcMain.handle('settings:get', () => ({ viewMode, modes: VIEW_MODES, lang }));
@@ -139,26 +127,12 @@ ipcMain.handle('lang:set', (_e, l) => {
   store.data.settings.lang = lang;
   store.save();
   for (const w of BrowserWindow.getAllWindows()) w.webContents.send('lang', lang);
-  settingsWin?.setTitle(t(lang, 'win.settings'));
-  loginWin?.setTitle(t(lang, 'login.title'));
-  buildTrayMenu();
+  settings.window?.setTitle(t(lang, 'win.settings'));
+  login.window?.setTitle(t(lang, 'login.title'));
+  tray.rebuildMenu();
   return lang;
 });
-ipcMain.handle('settings:open', () => openSettings());
-
-let settingsWin = null;
-function openSettings() {
-  if (settingsWin) { settingsWin.focus(); return; }
-  settingsWin = new BrowserWindow({
-    width: 380, height: 570, useContentSize: true, resizable: false, autoHideMenuBar: true, title: t(lang, 'win.settings'), alwaysOnTop: true,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
-      contextIsolation: true, nodeIntegration: false, sandbox: true,
-    },
-  });
-  settingsWin.loadFile(path.join(__dirname, '../renderer/settings.html'));
-  settingsWin.on('closed', () => { settingsWin = null; });
-}
+ipcMain.handle('settings:open', () => settings.open());
 
 ipcMain.handle('mark:current', () => {
   const now = nowDate();
@@ -243,57 +217,10 @@ ipcMain.handle('history:toggle', (_e, date, prayer) => {
   return true;
 });
 
-async function runSync() {
-  if (!sync) return;
-  try {
-    const res = await sync.syncOnce();
-    win?.webContents.send('sync', res);
-  } catch (e) {
-    win?.webContents.send('sync', { ok: false, reason: String(e.message ?? e) });
-  }
-}
-
-function scheduleSync() {
-  clearTimeout(syncTimer);
-  syncTimer = setTimeout(runSync, 500);
-}
-
-// Изменения с другого устройства (сайт, второй компьютер) приходят сразу через Supabase Realtime.
-let stopRealtime = null;
-async function ensureRealtime() {
-  if (!client || stopRealtime) return;
-  const { data } = await client.auth.getSession();
-  const user = data?.session?.user;
-  if (!user) return;
-  stopRealtime = subscribeMarks({ client, userId: user.id, onChange: runSync });
-}
-if (client) {
-  client.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') { stopRealtime?.(); stopRealtime = null; } else ensureRealtime();
-  });
-}
-
-function openLogin() {
-  if (loginWin) { loginWin.focus(); return; }
-  loginWin = new BrowserWindow({
-    width: 340, height: 330, resizable: false, autoHideMenuBar: true, title: t(lang, 'login.title'), alwaysOnTop: true,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
-      contextIsolation: true, nodeIntegration: false, sandbox: true,
-    },
-  });
-  loginWin.loadFile(path.join(__dirname, '../renderer/login.html'));
-  loginWin.on('closed', () => { loginWin = null; });
-}
-
 ipcMain.handle('auth:login', async (_e, email, password) => {
-  if (!client) return { ok: false, error: t(lang, 'login.noconfig') };
-  const { error } = await client.auth.signInWithPassword({ email, password });
-  if (error) {
-    return { ok: false, error: /invalid login/i.test(error.message) ? t(lang, 'login.badcreds') : error.message };
-  }
-  runSync();
-  ensureRealtime();
+  if (!supa) return { ok: false, error: t(lang, 'login.noconfig') };
+  const error = await supa.login(email, password);
+  if (error) return { ok: false, error: /invalid login/i.test(error) ? t(lang, 'login.badcreds') : error };
   return { ok: true };
 });
 
@@ -319,7 +246,15 @@ function tick() {
 app.whenReady().then(async () => {
   if (!gotLock) return;
   createWindow();
-  createTray();
+  tray = createTray({
+    iconPath: path.join(__dirname, '../../assets/tray.png'),
+    getLang: () => lang,
+    onToggle: toggleWidget,
+    onSettings: () => settings.open(),
+    onHistory: () => { showWidget(); win.webContents.send('open-history-request'); },
+    onLogin: () => login.open(),
+    onQuit: () => { quitting = true; app.quit(); },
+  });
   if (process.platform === 'darwin') {
     // На macOS виджет — без иконки в Dock, поверх всех окон и на всех рабочих столах.
     app.dock?.hide();
@@ -335,11 +270,9 @@ app.whenReady().then(async () => {
   setInterval(tick, 1000);
   tick();
   // Синхронизация стартует после таймера и не блокирует его (сеть может быть недоступна).
-  if (client) {
-    if (!hasStoredSession(authFile.read({}))) openLogin();
-    runSync();
-    ensureRealtime();
-    setInterval(runSync, 60e3); // страховка, если Realtime не дошёл
+  if (supa) {
+    if (!supa.hasSession()) login.open();
+    supa.start();
   }
 });
 
@@ -358,25 +291,6 @@ function showWidget() {
 
 function toggleWidget() {
   if (win.isVisible()) win.hide(); else showWidget();
-}
-
-function createTray() {
-  let trayImage = nativeImage.createFromPath(path.join(__dirname, '../../assets/tray.png'));
-  if (process.platform === 'darwin') trayImage = trayImage.resize({ height: 18 });
-  tray = new Tray(trayImage);
-  tray.setToolTip('Waqt');
-  buildTrayMenu();
-  tray.on('click', toggleWidget);
-}
-
-function buildTrayMenu() {
-  tray.setContextMenu(Menu.buildFromTemplate([
-    { label: t(lang, 'tray.toggle'), click: toggleWidget },
-    { label: t(lang, 'tray.settings'), click: openSettings },
-    { label: t(lang, 'tray.history'), click: () => { showWidget(); win.webContents.send('open-history-request'); } },
-    { label: t(lang, 'tray.login'), click: openLogin },
-    { label: t(lang, 'tray.quit'), click: () => { quitting = true; app.quit(); } },
-  ]));
 }
 
 function setupAutostart() {
