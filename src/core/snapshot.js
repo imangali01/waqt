@@ -34,6 +34,6 @@ export function buildSnapshot(days, marks, now, names = []) {
     missed,
     streak,
   };
-  if (s.phase === 'gap') snap.name = nameOfDay(names, today);
+  snap.name = nameOfDay(names, today);
   return snap;
 }

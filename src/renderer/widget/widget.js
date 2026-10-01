@@ -44,7 +44,7 @@ function render(s) {
   $('missed-btn').title = tr('missed.tip');
   $('missed-btn').textContent = missed.length ? `! ${missed.length}` : '';
   const chip = $('name-chip');
-  chip.hidden = !(s.phase === 'gap' && s.name);
+  chip.hidden = !s.name;
   if (!chip.hidden) {
     chip.textContent = s.name.translit;
     $('face-ar').textContent = s.name.arabic ?? '';
