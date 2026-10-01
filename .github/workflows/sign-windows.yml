@@ -1,0 +1,81 @@
+name: sign-windows
+
+# Сборка Windows-установщика с подписью SignPath Foundation. Запуск вручную или по тегу vX.Y.Z.
+# Работает только после одобрения заявки в SignPath: см. docs/code-signing.md.
+# Нужно в репозитории: Variables → SIGNPATH_ORGANIZATION_ID, SIGNPATH_PROJECT_SLUG; Secrets → SIGNPATH_API_TOKEN,
+# SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY. Без SIGNPATH_ORGANIZATION_ID задача пропускается.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  sign:
+    if: vars.SIGNPATH_ORGANIZATION_ID != ''
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test
+      - name: Настройки Supabase
+        shell: bash
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_PUBLISHABLE_KEY" ]; then
+            printf 'SUPABASE_URL=%s\nSUPABASE_PUBLISHABLE_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_PUBLISHABLE_KEY" > .env
+          fi
+      - run: npm run assets
+
+      # 1. Папка приложения без установщика и подпись Waqt.exe: Smart App Control проверяет именно его после установки.
+      - run: npx electron-builder --win --dir --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Загрузить Waqt.exe на подпись
+        id: unsigned-exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-exe
+          path: dist/win-unpacked/Waqt.exe
+      - name: Подписать Waqt.exe
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: release-signing
+          github-artifact-id: ${{ steps.unsigned-exe.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-exe
+      - name: Подменить Waqt.exe подписанным
+        shell: bash
+        run: cp signed-exe/Waqt.exe dist/win-unpacked/Waqt.exe
+
+      # 2. Установщик из подписанной папки и подпись самого установщика.
+      - run: npx electron-builder --win --prepackaged dist/win-unpacked --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Загрузить установщик на подпись
+        id: unsigned-setup
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-setup
+          path: dist/Waqt-Setup.exe
+      - name: Подписать установщик
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: release-signing
+          github-artifact-id: ${{ steps.unsigned-setup.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-setup
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Waqt-Setup-signed
+          path: signed-setup/Waqt-Setup.exe

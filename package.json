@@ -2,6 +2,7 @@
   "name": "waqt",
   "version": "0.4.3",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "main": "src/main/main.js",
   "scripts": {

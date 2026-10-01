@@ -42,3 +42,15 @@ npm run dist:mac     # только на macOS (или GitHub Actions: .github/w
 - `docs/deploy-vercel.md` — деплой сайта.
 - `docs/web-push.md` — push-уведомления на телефон.
 - `docs/superpowers/`, `docs/archive/issues/` — исходные спецификация, план и тикеты (исторические).
+
+## Лицензия
+
+Код распространяется под лицензией [MIT](LICENSE). Исключение — запись азана `assets/azan.mp3` (Creative Commons BY-SA 4.0), подробности в [assets/AZAN-LICENSE.md](assets/AZAN-LICENSE.md).
+
+## Политика подписи кода и конфиденциальность
+
+Установщик и `Waqt.exe` для Windows подписываются бесплатным сертификатом [SignPath Foundation](https://signpath.org) через GitHub Actions (`.github/workflows/sign-windows.yml`). Подписываются только сборки из этого репозитория, запущенные по тегу `vX.Y.Z`; подробности — в [docs/code-signing.md](docs/code-signing.md).
+
+- Автор, ревьюер и утверждающий: [imangali01](https://github.com/imangali01).
+- Приложение обращается к сети только для двух целей: загрузка времени намаза с `api.muftyat.kz` и, если пользователь вошёл в аккаунт, синхронизация отметок и истории с его проектом Supabase. Без входа отметки хранятся только на компьютере. Рекламы, аналитики и телеметрии нет.
+- Секреты (secret key Supabase, пароль БД) в репозитории и в сборках не используются; в приложение попадает только publishable key.
