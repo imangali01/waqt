@@ -1,6 +1,6 @@
 import { computeState } from './state.js';
 import { dateOf } from './tz.js';
-import { PRAYER_NAMES, windowsForDate } from './windows.js';
+import { windowsForDate } from './prayer-windows.js';
 import { nameOfDay } from './names.js';
 import { getMark, statusOfWindow } from './marks.js';
 import { computeStreak } from './streak.js';
@@ -17,17 +17,15 @@ export function buildSnapshot(days, marks, now, names = []) {
   const dots = windows.map((w) => ({
     date: w.date,
     prayer: w.prayer,
-    name: PRAYER_NAMES[w.prayer],
     status: statusOfWindow(w, getMark(marks, w.date, w.prayer), now),
   }));
   const missed = dots
     .filter((d) => d.status === 'missed')
-    .map((d) => ({ date: today, prayer: d.prayer, name: d.name }));
+    .map((d) => ({ date: today, prayer: d.prayer }));
 
   const marked = s.phase === 'prayer' && getMark(marks, s.date, s.prayer) !== null;
   const snap = {
     ...s,
-    prayerName: PRAYER_NAMES[s.prayer],
     marked,
     pulse: s.phase === 'prayer' && !marked && s.remainingMs <= PULSE_MS,
     dots,

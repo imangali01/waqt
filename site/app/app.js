@@ -1,9 +1,9 @@
-import { createWebApi } from './src/web/api.js';
+import { createWebApi } from './src/web/web-api.js';
 import { t, LANGS, prayerName, daysLabel, normalizeLang } from './src/core/i18n.js';
 import { nameOfDay } from './src/core/names.js';
 import { addDays, dateOf } from './src/core/tz.js';
 import { subscribeMarks } from './src/core/realtime.js';
-import { pushState, enablePush, disablePush, updatePushLang, pushSupported } from './push.js';
+import { pushState, enablePush, disablePush, updatePushLang, pushSupported } from './push-subscribe.js';
 import { VAPID_PUBLIC_KEY } from '../config.js';
 
 const $ = (id) => document.getElementById(id);

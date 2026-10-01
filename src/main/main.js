@@ -2,11 +2,11 @@ import { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen } from 'el
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createJsonFile } from '../core/store.js';
+import { createJsonFile } from './json-file.js';
 import { createTimesSource } from '../core/times.js';
 import { buildSnapshot } from '../core/snapshot.js';
 import { startRefresh } from '../core/refresh.js';
-import { createData } from '../core/data.js';
+import { createData } from './app-data.js';
 import { computeState } from '../core/state.js';
 import { setMark, clearMark, decideStatus, historyAction, trackDay, markLateIfMissed } from '../core/marks.js';
 import { buildHistory } from '../core/history.js';
@@ -15,16 +15,15 @@ import WebSocket from 'ws';
 import { parseEnv } from 'node:util';
 import { createSync } from '../core/sync.js';
 import { subscribeMarks } from '../core/realtime.js';
-import { hasStoredSession } from '../core/auth-state.js';
 import { animateBounds } from './animate.js';
-import { windowsForDate } from '../core/windows.js';
+import { windowsForDate } from '../core/prayer-windows.js';
 import { dateOf } from '../core/tz.js';
 import { dueReminder } from '../core/reminders.js';
 import { dueAzan } from '../core/azan.js';
-import { supabaseConfig } from '../core/config.js';
+import { supabaseConfig, hasStoredSession } from '../core/supabase-config.js';
 import { normalizeLang, t } from '../core/i18n.js';
-import { needsAutostart } from '../core/autostart.js';
-import { clampToDisplays, viewSize, normalizeViewMode, VIEW_MODES } from '../core/window-state.js';
+import { needsAutostart } from './autostart.js';
+import { clampToDisplays, viewSize, normalizeViewMode, VIEW_MODES } from './widget-bounds.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const userData = app.getPath('userData');
@@ -315,7 +314,6 @@ function tick() {
     fired.add(azan.key);
     win.webContents.send('azan');
   }
-  // [tick]
 }
 
 app.whenReady().then(async () => {
@@ -328,7 +326,6 @@ app.whenReady().then(async () => {
     win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   }
   setupAutostart();
-  // [startup]
   startRefresh({
     refresh: () => timesSource.refresh(new Date()),
     isMissing: () => Object.keys(timesSource.getDays()).length === 0,

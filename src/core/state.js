@@ -1,5 +1,5 @@
 import { dateOf, addDays } from './tz.js';
-import { windowsForDate } from './windows.js';
+import { windowsForDate } from './prayer-windows.js';
 
 const pad = (n) => String(n).padStart(2, '0');
 

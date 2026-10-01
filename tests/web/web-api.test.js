@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createWebApi } from '../../src/web/api.js';
+import { createWebApi } from '../../src/web/web-api.js';
 import { DAYS, at } from '../fixtures.js';
 
 const memory = (init = {}) => {

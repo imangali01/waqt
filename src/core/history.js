@@ -1,5 +1,5 @@
 import { addDays, dateOf } from './tz.js';
-import { PRAYERS, windowsForDate } from './windows.js';
+import { PRAYERS, windowsForDate } from './prayer-windows.js';
 import { getMark, statusOfWindow } from './marks.js';
 
 export function buildHistory({ days, tracked, marks, now, startDate, count }) {

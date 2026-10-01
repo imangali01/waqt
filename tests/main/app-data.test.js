@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createData } from '../../src/core/data.js';
+import { createData } from '../../src/main/app-data.js';
 
 describe('createData', () => {
   it('подставляет значения по умолчанию и сохраняет', () => {
@@ -15,7 +15,7 @@ describe('createData', () => {
   });
 });
 
-import { createData as _cd } from '../../src/core/data.js';
+import { createData as _cd } from '../../src/main/app-data.js';
 describe('viewMode по умолчанию', () => {
   it('полный вид', () => {
     expect(_cd({ read: (d) => d, write() {} }).data.settings.viewMode).toBe('full');

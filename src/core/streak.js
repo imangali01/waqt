@@ -1,5 +1,5 @@
 import { addDays, dateOf } from './tz.js';
-import { PRAYERS, windowsForDate } from './windows.js';
+import { PRAYERS, windowsForDate } from './prayer-windows.js';
 import { getMark } from './marks.js';
 
 const MAX_DAYS = 3660;

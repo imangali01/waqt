@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { clampToDisplays } from '../../src/core/window-state.js';
+import { clampToDisplays } from '../../src/main/widget-bounds.js';
 
 const displays = [{ workArea: { x: 0, y: 0, width: 1920, height: 1040 } }];
 
@@ -18,7 +18,7 @@ describe('clampToDisplays', () => {
   });
 });
 
-import { viewSize, normalizeViewMode } from '../../src/core/window-state.js';
+import { viewSize, normalizeViewMode } from '../../src/main/widget-bounds.js';
 
 describe('viewSize / normalizeViewMode', () => {
   it('полный вид 170x170, компактный 170x85', () => {
@@ -35,7 +35,7 @@ describe('viewSize / normalizeViewMode', () => {
   });
 });
 
-import { VIEW_MODES } from '../../src/core/window-state.js';
+import { VIEW_MODES } from '../../src/main/widget-bounds.js';
 
 describe('дополнительные размеры', () => {
   it('средний 150x150, полоса 150x75', () => {

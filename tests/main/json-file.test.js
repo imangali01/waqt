@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { createJsonFile } from '../../src/core/store.js';
+import { createJsonFile } from '../../src/main/json-file.js';
 
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'waqt-'));
 

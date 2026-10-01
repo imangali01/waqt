@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { windowsForDate } from '../../src/core/windows.js';
+import { windowsForDate } from '../../src/core/prayer-windows.js';
 import { DAYS, at } from '../fixtures.js';
 
 describe('windowsForDate', () => {

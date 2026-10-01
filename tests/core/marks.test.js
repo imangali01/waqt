@@ -3,7 +3,7 @@ import {
   markKey, getMark, setMark, clearMark, mergeMarks,
   decideStatus, statusOfWindow, historyAction, trackDay, markLateIfMissed,
 } from '../../src/core/marks.js';
-import { windowsForDate } from '../../src/core/windows.js';
+import { windowsForDate } from '../../src/core/prayer-windows.js';
 import { DAYS, at } from '../fixtures.js';
 
 const W = windowsForDate(DAYS, '2026-07-01');
