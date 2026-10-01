@@ -91,6 +91,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Две плитки рядом — квадратные (если текст длинный, плитка вытягивается, а не обрезает его). */
 .pair > .glass { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; }
 .pair:has(#name-card[hidden]) > .glass { aspect-ratio: auto; }
+#streak-card { position: relative; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.pop { position: absolute; left: 8px; right: 8px; bottom: calc(100% - 8px); z-index: 5; padding: 10px 12px; border-radius: 14px; background: #1c2421; border: 1px solid var(--glass-line); box-shadow: 0 10px 28px rgba(0, 0, 0, .4); font-size: 13px; font-weight: 500; line-height: 1.35; color: #fff; }
+.pop[hidden] { display: none; }
 .big { display: flex; align-items: center; gap: 6px; font-size: 44px; font-weight: 900; letter-spacing: -.03em; line-height: 1.1; margin-top: 4px; color: var(--muted); }
 #streak-card.on .big { color: #ffb15c; }
 .day-progress { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .16); overflow: hidden; margin-top: 12px; }

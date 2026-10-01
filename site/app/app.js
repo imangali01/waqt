@@ -87,11 +87,25 @@ function renderStreak() {
   const n = snap?.streak ?? 0;
   $('streak-n').textContent = n;
   $('streak-card').classList.toggle('on', n > 0);
-  $('streak-label').textContent = n > 0 ? daysLabel(lang, n) : t(lang, 'streak.off');
+  $('streak-label').textContent = daysLabel(lang, n);
+  $('streak-pop').textContent = t(lang, n > 0 ? 'streak.tip' : 'streak.off');
   const onTime = (snap?.dots ?? []).filter((d) => d.status === 'on_time').length;
   $('day-bar').style.width = `${onTime * 20}%`;
   $('day-count').textContent = t(lang, 'app.daycount', { n: onTime });
 }
+
+// Подсказка по серии: по нажатию на плитку, закрывается нажатием в любом другом месте.
+function toggleStreakPop(force) {
+  const pop = $('streak-pop');
+  pop.hidden = !(force ?? pop.hidden);
+  $('streak-card').setAttribute('aria-expanded', String(!pop.hidden));
+}
+$('streak-card').addEventListener('click', (e) => { e.stopPropagation(); toggleStreakPop(); });
+$('streak-card').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleStreakPop(); }
+  if (e.key === 'Escape') toggleStreakPop(false);
+});
+document.addEventListener('click', () => toggleStreakPop(false));
 
 function renderName() {
   const name = names.length && snap?.date ? nameOfDay(names, snap.date) : null;
