@@ -22,3 +22,6 @@ supabase/functions/send-reminders/core/
 
 # Временные файлы Supabase CLI
 supabase/.temp/
+
+# Скриншоты для показа в чате
+.screens/
