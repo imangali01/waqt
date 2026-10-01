@@ -1,5 +1,5 @@
 // Готовит site/ к публикации: копирует общий код приложения в веб-версию и рисует иконки.
-// Запуск: node scripts/build-site.js  (то же делает GitHub Actions перед публикацией на Pages)
+// Запуск: node scripts/build-site.js  (то же делает Vercel при деплое, см. vercel.json)
 import fs from 'node:fs';
 import path from 'node:path';
 import { moonPng } from './png.js';
