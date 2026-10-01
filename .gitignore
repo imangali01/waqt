@@ -19,3 +19,6 @@ site/assets/
 
 # Генерируется scripts/build-functions.js
 supabase/functions/send-reminders/core/
+
+# Временные файлы Supabase CLI
+supabase/.temp/

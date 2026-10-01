@@ -6,5 +6,5 @@ input { width: 100%; box-sizing: border-box; height: 38px; padding: 0 14px; marg
 input:focus { outline: 2px solid #2BA36B; }
 button { height: 38px; padding: 0 22px; border: 0; border-radius: 19px; background: #2BA36B; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
 button:disabled { opacity: .6; cursor: default; }
-#err { color: #E53935; font-size: 12px; min-height: 16px; margin: 4px 0 8px; }
+#err { color: #d40404; font-size: 12px; min-height: 16px; margin: 4px 0 8px; }
   

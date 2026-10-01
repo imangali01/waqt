@@ -6,8 +6,8 @@
   --text: #fff;
   --muted: rgba(255, 255, 255, .62);
   --green: #4aa375; --green-hi: #5cc08b;
-  --warn: #d8453b; --crit: #8a1230;
-  --yellow: #f2c230; --red: #e5473d;
+  --warn: #d40404; --crit: #731212;
+  --yellow: #f2c230; --red: #d40404;
   --sky-a: #8b845c; --sky-b: #a67d47; --sky-c: #9b6a45;
 }
 body[data-phase="fajr"]    { --sky-a: #5d6f9e; --sky-b: #a98a94; --sky-c: #d4a273; }
@@ -81,7 +81,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .strip-sub { font-size: 12.5px; opacity: .85; font-weight: 500; }
 .strip-time { display: flex; align-items: baseline; direction: ltr; white-space: nowrap; }
 .timer, .seconds { font-size: 30px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.seconds { opacity: .85; }
 
 .markpill { height: 54px; border-radius: 27px; border: 1.5px solid rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .2); font-weight: 800; font-size: 17px; letter-spacing: .01em; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: transform .1s ease, background-color .2s ease; }
 .markpill:active { transform: scale(.98); }

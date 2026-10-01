@@ -136,7 +136,7 @@ async function main() {
   const INK = new Color('#0d0f12');
   const MUTED = new Color('#7d848b');
   const ORANGE = new Color('#F08A1C');
-  const LEVEL = { normal: INK, warn: new Color('#E53935'), critical: new Color('#7A0019') };
+  const LEVEL = { normal: INK, warn: new Color('#d40404'), critical: new Color('#731212') };
 
   const now = new Date();
   const s = stateAt(await loadDays(now), now);

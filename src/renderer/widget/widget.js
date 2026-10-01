@@ -64,20 +64,24 @@ function render(s) {
     $('timer').textContent = '--:--';
     $('timer').className = 'timer level-normal';
     $('seconds').textContent = '';
-    $('seconds').className = 'seconds';
+    $('seconds').className = 'seconds level-normal';
+    $('time').className = 'time';
     $('bar').style.width = '0';
     return;
   }
-  const level = s.level ?? 'normal';
+  // Отмеченный намаз остаётся спокойным: цвета, полоса и пульсация меняются только у непрочитанного.
+  const level = s.marked ? 'normal' : (s.level ?? 'normal');
+  const pulse = !s.marked && s.pulse;
   $('kicker').textContent = s.phase === 'prayer' ? tr('now') : tr('next');
   $('label').textContent = prayerName(getLang(), s.prayer);
   $('sub').textContent = s.phase === 'prayer' ? tr('until', { t: s.atText }) : tr('at', { t: s.atText });
   $('timer').textContent = s.text;
-  $('timer').className = `timer level-${level}${s.pulse ? ' pulse' : ''}`;
+  $('timer').className = `timer level-${level}`;
   $('seconds').textContent = `:${s.seconds}`;
-  $('seconds').className = `seconds level-${level}${s.pulse ? ' pulse' : ''}`;
-  // Полоса краснеет только пока намаз не отмечен.
-  $('bar').className = s.marked ? 'level-normal' : `level-${level}`;
+  $('seconds').className = `seconds level-${level}`;
+  // Не трогаем bump, чтобы перерисовка каждую секунду не обрывала его анимацию.
+  $('time').classList.toggle('pulse', pulse);
+  $('bar').className = `level-${level}`;
   $('bar').style.width = s.progress == null ? '0' : `${Math.round(s.progress * 100)}%`;
 }
 
@@ -115,6 +119,11 @@ window.waqt.onAzan(() => {
 });
 
 window.waqt.onChime(() => {
+  // Размер времени один раз увеличивается и уменьшается, чтобы звук было видно на экране.
+  const t = $('time');
+  t.classList.remove('bump');
+  void t.offsetWidth;
+  t.classList.add('bump');
   const a = $('chime');
   a.currentTime = 0;
   a.play().catch(() => {});
@@ -135,5 +144,7 @@ window.waqt.onMode((m) => {
   for (const x of ['compact', 'medium', 'strip', 'scaled']) cl.toggle(x, on.includes(x));
 });
 $('view-btn').addEventListener('click', () => window.waqt.openSettings());
+
+$('time').addEventListener('animationend', (e) => { if (e.animationName === 'bump') $('time').classList.remove('bump'); });
 
 initLang(() => { if (current) render(current); });

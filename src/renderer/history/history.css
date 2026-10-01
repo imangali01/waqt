@@ -13,7 +13,7 @@ html.history-mode #widget { display: none; }
 .h-nav button, .h-nav input { height: 34px; border: 0; border-radius: 17px; background: #f1f3f4; padding: 0 14px;
   font: inherit; font-weight: 600; color: #0d0f12; cursor: pointer; }
 .h-nav button:hover { background: #e6e9eb; }
-.h-nav .h-close { color: #E53935; width: 34px; padding: 0; }
+.h-nav .h-close { color: #d40404; width: 34px; padding: 0; }
 
 .h-streak { display: inline-block; vertical-align: middle; margin-left: 10px; padding: 3px 12px; border-radius: 14px;
   background: #f1f3f4; color: #7d848b; font-size: 14px; font-weight: 700; letter-spacing: 0; }
