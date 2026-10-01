@@ -77,3 +77,5 @@ h3 { font-size: 20px; margin: 0 0 10px; letter-spacing: -.01em; }
 .doc p, .doc li { font-size: 16px; }
 .doc ul { padding-left: 22px; }
 .doc .muted { color: var(--muted); }
+.btn.primary.disabled { background: var(--line); color: var(--ink); opacity: .6; cursor: default; }
+.btn.primary.disabled:hover { background: var(--line); transform: none; box-shadow: none; }
