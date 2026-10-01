@@ -174,6 +174,18 @@ ipcMain.handle('mark:current', () => {
   return true;
 });
 
+ipcMain.handle('mark:unmark', () => {
+  const now = nowDate();
+  const s = computeState(timesSource.getDays(), now);
+  if (s.phase !== 'prayer') return false;
+  const marks = clearMark(store.data.marks, s.date, s.prayer, now.toISOString());
+  if (marks === store.data.marks) return false;
+  store.data.marks = marks;
+  store.save();
+  scheduleSync();
+  return true;
+});
+
 ipcMain.handle('mark:missed', (_e, date, prayer) => {
   const now = nowDate();
   const w = windowsForDate(timesSource.getDays(), date).find((x) => x.prayer === prayer);
@@ -224,7 +236,7 @@ ipcMain.handle('history:toggle', (_e, date, prayer) => {
   const now = nowDate();
   const cell = buildHistory(historyArgs(date, 1))[0].cells.find((c) => c.prayer === prayer);
   const action = historyAction(cell?.status);
-  if (action === 'late') store.data.marks = setMark(store.data.marks, date, prayer, 'late', now.toISOString());
+  if (action === 'late' || action === 'on_time') store.data.marks = setMark(store.data.marks, date, prayer, action, now.toISOString());
   else if (action === 'clear') store.data.marks = clearMark(store.data.marks, date, prayer, now.toISOString());
   else return false;
   store.save();

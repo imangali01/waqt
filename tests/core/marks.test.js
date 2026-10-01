@@ -65,11 +65,11 @@ describe('mergeMarks', () => {
 });
 
 describe('historyAction', () => {
-  it('красный и серый → late; зелёный и жёлтый → сброс; остальное нельзя', () => {
+  it('цикл: красный/серый → жёлтый → зелёный → сброс (красный); остальное нельзя', () => {
     expect(historyAction('missed')).toBe('late');
     expect(historyAction('nodata')).toBe('late');
+    expect(historyAction('late')).toBe('on_time');
     expect(historyAction('on_time')).toBe('clear');
-    expect(historyAction('late')).toBe('clear');
     expect(historyAction('upcoming')).toBeNull();
     expect(historyAction('pending')).toBeNull();
   });

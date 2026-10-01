@@ -133,13 +133,15 @@ describe('веб-версия: данные для экрана приложен
     expect(day[2].status).toBe('upcoming');
   });
 
-  it('getHistory и toggleCell: пропущенный → «позже», «позже» → отмена', async () => {
+  it('getHistory и toggleCell: красный → жёлтый → зелёный (даже после окна) → красный', async () => {
     const w = make();
     w.tick(); // фиксирует сегодняшний день в истории
     const cell = async () => (await w.api.getHistory('2026-07-01', 1))[0].cells.find((c) => c.prayer === 'fajr').status;
     expect(await cell()).toBe('missed');
     expect(await w.api.toggleCell('2026-07-01', 'fajr')).toBe(true);
     expect(await cell()).toBe('late');
+    expect(await w.api.toggleCell('2026-07-01', 'fajr')).toBe(true);
+    expect(await cell()).toBe('on_time');
     expect(await w.api.toggleCell('2026-07-01', 'fajr')).toBe(true);
     expect(await cell()).toBe('missed');
   });

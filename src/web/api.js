@@ -122,7 +122,7 @@ export function createWebApi({ storage, names = [], fetchFn, client = null, now 
       const t = now();
       const cell = buildHistory({ days, tracked: data.tracked, marks: data.marks, now: t, startDate: date, count: 1 })[0].cells.find((c) => c.prayer === prayer);
       const action = historyAction(cell?.status);
-      if (action === 'late') data.marks = setMark(data.marks, date, prayer, 'late', t.toISOString());
+      if (action === 'late' || action === 'on_time') data.marks = setMark(data.marks, date, prayer, action, t.toISOString());
       else if (action === 'clear') data.marks = clearMark(data.marks, date, prayer, t.toISOString());
       else return false;
       saveData();
