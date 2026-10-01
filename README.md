@@ -6,7 +6,7 @@
 - **Веб-версия** для iPhone: https://waqt-timer.vercel.app/app/ → Safari → «На экран Домой», push-напоминания.
 - **Виджет iPhone** через Scriptable: `scripts/scriptable/`.
 
-Сайт: https://waqt-timer.vercel.app
+Сайт: https://waqt-timer.vercel.app · [Политика конфиденциальности](https://waqt-timer.vercel.app/privacy)
 
 ## Запуск и сборка
 
