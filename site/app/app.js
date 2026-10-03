@@ -3,7 +3,7 @@ import { t, LANGS, prayerName, daysLabel, normalizeLang } from './src/core/i18n.
 import { nameOfDay } from './src/core/names.js';
 import { addDays, dateOf } from './src/core/tz.js';
 import { subscribeMarks } from './src/core/realtime.js';
-import { pushState, enablePush, disablePush, updatePushLang, pushSupported } from './push-subscribe.js';
+import { pushState, enablePush, disablePush, updatePushLang, syncPush, pushSupported } from './push-subscribe.js';
 import { VAPID_PUBLIC_KEY } from '../config.js';
 
 const $ = (id) => document.getElementById(id);
@@ -234,7 +234,7 @@ async function renderPush() {
 }
 $('push-btn').addEventListener('click', async () => {
   try {
-    if (await pushState() === 'on') await disablePush({ client: pushClient });
+    if (await pushState() === 'on') await disablePush({ client: pushClient, byUser: true });
     else await enablePush({ client: pushClient, vapidKey: VAPID_PUBLIC_KEY, lang });
   } catch { /* нет сети или отказ — состояние кнопки покажет результат */ }
   renderPush();
@@ -258,7 +258,13 @@ fetch('names.json').then((r) => r.json()).then((list) => { names.push(...list); 
 setInterval(tick, 1000);
 refresh().then(tick);
 setInterval(() => refresh().then(tick), 5 * 3600e3);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh().then(tick); syncNow(); } });
+let healAt = 0;
+const healPush = (force = false) => {
+  if (!pushClient || (!force && Date.now() - healAt < 5 * 60e3)) return;
+  healAt = Date.now();
+  syncPush({ client: pushClient, vapidKey: VAPID_PUBLIC_KEY, lang }).then(renderPush).catch(() => {});
+};
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh().then(tick); syncNow(); healPush(); } });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
 // Аккаунт: Supabase подключается после показа таймера. Без сети остаёмся в приложении по сохранённой сессии.
@@ -277,14 +283,14 @@ if (!embed) {
       btn.addEventListener('click', async () => {
         if (!confirm(t(lang, 'app.logout') + '?')) return;
         // Подписку убираем до выхода: после него RLS уже не даст её удалить.
-        await disablePush({ client }).catch(() => {});
+        await disablePush({ client, byUser: true }).catch(() => {});
         await signOut();
         try { localStorage.removeItem(AUTH_KEY); } catch { /* ignore */ }
         location.replace('../');
       });
       if (user) {
         pushClient = client;
-        renderPush();
+        healPush(true);
         syncNow().then(tick);
         // Отметки с других устройств (десктоп) приходят сразу.
         subscribeMarks({ client, userId: user.id, onChange: () => syncNow().then(tick) });
