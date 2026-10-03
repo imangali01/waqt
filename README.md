@@ -10,7 +10,11 @@
 
 ## Скриншоты
 
-**Десктоп** — виджет и история намазов:
+**Десктоп** — виджет поверх рабочего стола:
+
+<img src="docs/screenshots/desktop-with-widget.png" alt="Виджет Waqt на рабочем столе Windows" width="800">
+
+Виджет крупнее и история намазов (рендер на демо-данных):
 
 <p>
   <img src="docs/screenshots/desktop-widget.png" alt="Десктопный виджет Waqt" width="220">
