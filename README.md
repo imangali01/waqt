@@ -8,6 +8,21 @@
 
 Сайт: https://waqt-timer.vercel.app · [Политика конфиденциальности](https://waqt-timer.vercel.app/privacy)
 
+## Скриншоты
+
+**Десктоп** — виджет и история намазов:
+
+<p>
+  <img src="docs/screenshots/desktop-widget.png" alt="Десктопный виджет Waqt" width="220">
+  <img src="docs/screenshots/desktop-history.png" alt="История намазов в десктопном приложении" width="640">
+</p>
+
+**Мобильная веб-версия** (iPhone, «На экран Домой»):
+
+<img src="docs/screenshots/mobile.png" alt="Веб-версия Waqt на телефоне" width="300">
+
+> Скриншоты сделаны на демо-данных (серия и отметки примерные).
+
 ## Запуск и сборка
 
 ```
