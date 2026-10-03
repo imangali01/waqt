@@ -78,7 +78,16 @@ function renderStreak() {
   $('h-streak').textContent = tr('h.streak', { n: streakN, days: daysLabel(getLang(), streakN) });
   $('h-streak').classList.toggle('on', streakN > 0);
 }
-window.waqt.onState((s) => { streakN = s.streak ?? 0; renderStreak(); });
+// Смена суток при открытом виджете: если окно заканчивалось сегодняшним днём, сдвигаем его на новый день.
+let lastToday = todayAstana();
+function checkNewDay() {
+  const today = todayAstana();
+  if (today === lastToday) return;
+  if (start === shift(lastToday, -(COUNT - 1))) start = shift(today, -(COUNT - 1));
+  lastToday = today;
+  if (!$('history').hidden) load();
+}
+window.waqt.onState((s) => { streakN = s.streak ?? 0; renderStreak(); checkNewDay(); });
 initLang(() => { renderStreak(); if (!$('history').hidden) load(); });
 
 window.waqt.onView((v) => (v === 'history' ? enterHistory() : leaveHistory()));
